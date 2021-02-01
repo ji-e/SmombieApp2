@@ -1,0 +1,131 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Font_12_666666">
+        <item name="android:textColor">@color/color_666666</item>
+        <item name="android:textSize">@dimen/dimen_12dp</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Font_12_4E3FD5">
+        <item name="android:textColor">@color/color_4E3FD5</item>
+        <item name="android:textSize">@dimen/dimen_12dp</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Font_12_3D3D3D">
+        <item name="android:textColor">@color/color_3D3D3D</item>
+        <item name="android:textSize">@dimen/dimen_12dp</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Font_12_FFFFFF">
+        <item name="android:textColor">@color/color_FFFFFF</item>
+        <item name="android:textSize">@dimen/dimen_12dp</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+
+
+    <style name="Font_14_4E4BE8">
+        <item name="android:textColor">@color/color_4E4BE8</item>
+        <item name="android:textSize">@dimen/dimen_14dp</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Font_14_5534DD">
+        <item name="android:textColor">@color/color_5534DD</item>
+        <item name="android:textSize">@dimen/dimen_14dp</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Font_14_8D8D8D">
+        <item name="android:textColor">@color/color_8D8D8D</item>
+        <item name="android:textSize">@dimen/dimen_14dp</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Font_14_666666">
+        <item name="android:textColor">@color/color_666666</item>
+        <item name="android:textSize">@dimen/dimen_14dp</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Font_14_000000">
+        <item name="android:textColor">@color/color_000000</item>
+        <item name="android:textSize">@dimen/dimen_14dp</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Font_14_242424">
+        <item name="android:textColor">@color/color_242424</item>
+        <item name="android:textSize">@dimen/dimen_14dp</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Font_14_FFFFFF">
+        <item name="android:textColor">@color/color_FFFFFF</item>
+        <item name="android:textSize">@dimen/dimen_14dp</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Font_16_3D3D3D">
+        <item name="android:textColor">@color/color_3D3D3D</item>
+        <item name="android:textSize">@dimen/dimen_16dp</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Font_16_4E3FD5">
+        <item name="android:textColor">@color/color_4E3FD5</item>
+        <item name="android:textSize">@dimen/dimen_16dp</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Font_16_FFFFFF">
+        <item name="android:textColor">@color/color_FFFFFF</item>
+        <item name="android:textSize">@dimen/dimen_16dp</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Font_16_8D8D8D">
+        <item name="android:textColor">@color/color_8D8D8D</item>
+        <item name="android:textSize">@dimen/dimen_16dp</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Font_16_000000">
+        <item name="android:textColor">@color/color_000000</item>
+        <item name="android:textSize">@dimen/dimen_16dp</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Font_20_000000">
+        <item name="android:textColor">@color/color_000000</item>
+        <item name="android:textSize">@dimen/dimen_20dp</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Font_20_4E4BE8">
+        <item name="android:textColor">@color/color_4E4BE8</item>
+        <item name="android:textSize">@dimen/dimen_20dp</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Font_20_242424">
+        <item name="android:textColor">@color/color_242424</item>
+        <item name="android:textSize">@dimen/dimen_20dp</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Font_20_F57031">
+        <item name="android:textColor">@color/color_FF8718</item>
+        <item name="android:textSize">@dimen/dimen_20dp</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Font_22_FFFFFF">
+        <item name="android:textColor">@color/color_FFFFFF</item>
+        <item name="android:textSize">@dimen/dimen_22dp</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+</resources>
