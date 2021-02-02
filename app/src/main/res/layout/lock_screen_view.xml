@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:padding="@dimen/dimen_50dp">
+
+
+    <TextView
+        style="@style/Font_20_000000"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/dimen_40dp"
+        android:text="@string/lock_screen_view_title"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        style="@style/Font_14_000000"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_20dp"
+        android:gravity="center"
+        android:text="@string/lock_screen_view_step_cnt"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/lock_screen_step_cnt"
+        style="@style/Font_74_000000"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_20dp"
+        android:layout_marginBottom="@dimen/dimen_40dp"
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="0" />
+
+    <Button
+        android:background="@color/purple_500"
+        android:id="@+id/lock_screen_btn"
+        style="@style/Font_16_FFFFFF"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_50dp"
+        android:text="@string/btn_exit" />
+
+</LinearLayout>

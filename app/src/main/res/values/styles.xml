@@ -128,4 +128,10 @@
         <item name="android:includeFontPadding">false</item>
     </style>
 
+    <style name="Font_74_000000">
+        <item name="android:textColor">@color/color_000000</item>
+        <item name="android:textSize">@dimen/dimen_74dp</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
 </resources>

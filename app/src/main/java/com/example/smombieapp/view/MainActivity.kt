@@ -18,26 +18,18 @@ import com.example.smombieapp.utils.LogUtil
 
 class MainActivity : BaseActivity() {
     private lateinit var binding: ActivityMainBinding
-
-    private val preferences = BaseApplication.useSharedPreference
     private val backPressCloseHandler = BackPressCloseHandler(this)
     private var stepService: StepService? = null
 
 
     private lateinit var stepServiceIntent: Intent
 
-
-
-
     private val stepCallback: StepCallback = object : StepCallback {
         override fun onStepCallback(step: String) {
-
-
             binding.mainTvStepCnt.text = "${getString(R.string.main_step_cnt)} $step"
         }
 
         override fun onUnbindService() {
-//            preferences.setPreferencesData(Constants.IS_STEP_SERVICE, "N")
             LogUtil.e("unbind")
         }
 
@@ -50,7 +42,6 @@ class MainActivity : BaseActivity() {
 
     private val serviceConnection: ServiceConnection = object : ServiceConnection {
         override fun onServiceDisconnected(name: ComponentName?) {
-//            preferences.setPreferencesData(Constants.IS_STEP_SERVICE, "N")
             LogUtil.e("disconnected")
 
         }
@@ -61,7 +52,6 @@ class MainActivity : BaseActivity() {
             val mb: StepService.StepBinder = service as StepService.StepBinder
             stepService = mb.service
             stepService!!.setCallback(stepCallback)
-//            preferences.setPreferencesData(Constants.IS_STEP_SERVICE, "Y")
             LogUtil.e("connected")
         }
     }
@@ -79,8 +69,7 @@ class MainActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
         stepServiceIntent = Intent(this, StepService::class.java)
-        binding.mainTvStepCnt.text =
-            "${getString(R.string.main_step_cnt)} ${stepService?.stepCnt?.toInt()}"
+        binding.mainTvStepCnt.text = "${getString(R.string.main_step_cnt)} ${stepService?.stepCnt?.toInt()}"
         if (stepService?.isService == "Y") {
             bindService(stepServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
             binding.mainCkbService.isChecked = true
@@ -98,7 +87,12 @@ class MainActivity : BaseActivity() {
             } else if (!isChecked && stepService?.isService == "Y") {
                 stepServiceIntent.action = Constants.STEP_SERVICE_STOP
                 startService(stepServiceIntent)
-                unbindService(serviceConnection)
+                try {
+                    unbindService(serviceConnection)
+                }catch (e:Exception){
+
+                }
+
             }
         }
     }

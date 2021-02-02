@@ -29,9 +29,8 @@ class PermissionActivity : BaseActivity() {
         setContentView(binding.root)
 
         initView()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            permissionCheck()
-        }
+        permissionCheck()
+
     }
 
     private fun initView() {

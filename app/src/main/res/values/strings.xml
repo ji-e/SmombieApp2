@@ -1,17 +1,17 @@
 <resources>
     <string name="app_name">SmombieApp</string>
-
-
-    <string name="exit_msg">한 번 더 뒤로가기 누를 시 종료</string>
+    <string name="exit_msg">한 번 더 뒤로가기 누를 시 종료됩니다.</string>
     <string name="notification_body">스몸비 방지 실행 중</string>
-    <string name="notification_warning">경고!</string>
-    <string name="btn_confirm">확인</string>
 
+    <string name="btn_confirm">확인</string>
+    <string name="btn_exit">종료</string>
 
     <string name="permission_title">권한 설정</string>
-
 
     <string name="main_service_state">서비스 상태: </string>
     <string name="main_service_on">서비스 실행</string>
     <string name="main_step_cnt">걸음 수:  </string>
+
+    <string name="lock_screen_view_title">스몸비 방지 실행 중</string>
+    <string name="lock_screen_view_step_cnt">걸음 수 </string>
 </resources>
