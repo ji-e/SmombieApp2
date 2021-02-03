@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import com.example.smombieapp.base.BaseActivity
 import com.example.smombieapp.databinding.ActivityPermissionBinding
 import com.example.smombieapp.utils.Constants
+import com.example.smombieapp.utils.LogUtil
 import com.example.smombieapp.view.MainActivity
 
 
@@ -52,7 +53,12 @@ class PermissionActivity : BaseActivity() {
             }
 
             permissionOnSuccess()
-        } else if (requestCode == Constants.CHECK_OVERLAY_PERMISSION) {
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == Constants.CHECK_OVERLAY_PERMISSION) {
             permissionOnSuccess()
         }
     }
@@ -61,7 +67,7 @@ class PermissionActivity : BaseActivity() {
     private fun permissionOnSuccess() {
         if (!Settings.canDrawOverlays(this)) {
             // 다른앱 위에 그리기 체크
-//            setOverlayPermission()
+            setOverlayPermission()
         } else {
             startActivity(Intent(this, MainActivity::class.java))
             finish()
@@ -77,18 +83,18 @@ class PermissionActivity : BaseActivity() {
     /** 권한체크 */
     private fun permissionCheck() {
         val permission: Array<String> =
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                )
-            } else {
-                arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACTIVITY_RECOGNITION
-                    //            Manifest.permission.READ_EXTERNAL_STORAGE,
-                    //            Manifest.permission.WRITE_EXTERNAL_STORAGE
-                )
-            }
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                    arrayOf(
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    )
+                } else {
+                    arrayOf(
+                            Manifest.permission.ACTIVITY_RECOGNITION,
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    )
+                }
 
         for (i in permission.indices) {
             val permissionCheck = ContextCompat.checkSelfPermission(this, permission[i])
@@ -105,16 +111,19 @@ class PermissionActivity : BaseActivity() {
 
     /** 권한설정 */
     private fun setPermission() {
-        val permissionArr = arrayOfNulls<String>(permissionList.size)
-        for (i in 0 until permissionList.size) {
-            permissionArr[i] = permissionList[i]
-        }
+        if(!permissionList.isEmpty()) {
 
-        ActivityCompat.requestPermissions(
-            this,
-            permissionArr,
-            Constants.CHECK_PERMISSION
-        )
+            val permissionArr = arrayOfNulls<String>(permissionList.size)
+            for (i in 0 until permissionList.size) {
+                permissionArr[i] = permissionList[i]
+            }
+
+            ActivityCompat.requestPermissions(
+                    this,
+                    permissionArr,
+                    Constants.CHECK_PERMISSION
+            )
+        }
         if (!Settings.canDrawOverlays(this)) {
             setOverlayPermission()
         }

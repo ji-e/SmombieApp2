@@ -4,11 +4,13 @@ import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.graphics.PixelFormat
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.location.LocationManager
 import android.os.Binder
 import android.os.Build
 import android.os.CountDownTimer
@@ -19,6 +21,7 @@ import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import com.example.smombieapp.R
 import com.example.smombieapp.base.BaseApplication
@@ -42,6 +45,7 @@ class StepService : Service(), SensorEventListener {
     var isService = preferences.getPreferencesData(Constants.IS_STEP_SERVICE)
     var isLock = false
 
+    var smombieStep=0f
     var step = 0f
     var stepCnt =
             if (preferences.getPreferencesData(Constants.STEP_SERVICE_CNT).isEmpty()) 0f
@@ -49,7 +53,7 @@ class StepService : Service(), SensorEventListener {
 
     private val countDownTimer = object : CountDownTimer(10 * 1000, 1000) {
         override fun onTick(millisUntilFinished: Long) {
-            LogUtil.e("seconds remaining: " + millisUntilFinished / 1000)
+//            LogUtil.e("seconds remaining: " + millisUntilFinished / 1000)
         }
 
         override fun onFinish() {
@@ -110,7 +114,12 @@ class StepService : Service(), SensorEventListener {
                 val stepCntStr = stepCnt.toInt().toString()
                 preferences.setPreferencesData(Constants.STEP_SERVICE_CNT,stepCntStr )
 
-                LogUtil.e("스텝 카운트: ${event.values[0]}, stepCntStr")
+
+
+                if(screenBR.isScreenON){
+                    smombieStep++
+                }
+                LogUtil.e("스텝 카운트: ${event.values[0]}, $stepCntStr, $smombieStep")
 
                 callback!!.onStepCallback(stepCntStr)
 

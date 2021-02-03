@@ -11,6 +11,8 @@
     <string name="main_service_state">서비스 상태: </string>
     <string name="main_service_on">서비스 실행</string>
     <string name="main_step_cnt">걸음 수:  </string>
+    <string name="main_location">위치:  </string>
+    <string name="main_gps_stage">GPS 상태:  </string>
 
     <string name="lock_screen_view_title">스몸비 방지 실행 중</string>
     <string name="lock_screen_view_step_cnt">걸음 수 </string>

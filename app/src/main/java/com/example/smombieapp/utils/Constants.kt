@@ -14,4 +14,7 @@ object Constants {
     const val CHANNEL_ID = "smombie"
     const val CHANNEL_NAME = "smombie"
 
+
+    const val EXCEL_FILE_NAME = "smombieApp_log"
+
 }
