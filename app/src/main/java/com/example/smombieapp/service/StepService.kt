@@ -4,40 +4,42 @@ import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.pm.PackageManager
 import android.graphics.PixelFormat
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import android.location.LocationManager
-import android.os.Binder
-import android.os.Build
-import android.os.CountDownTimer
-import android.os.IBinder
+import android.net.Uri
+import android.os.*
+import android.telecom.TelecomManager
+import android.telephony.CellLocation
+import android.telephony.PhoneStateListener
+import android.telephony.TelephonyDisplayInfo
+import android.telephony.TelephonyManager
 import android.view.LayoutInflater
 import android.view.View
-import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
-import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import com.example.smombieapp.R
 import com.example.smombieapp.base.BaseApplication
-import com.example.smombieapp.brodcast.ScreenBR
+import com.example.smombieapp.brodcast.ScreenReceiver
 import com.example.smombieapp.utils.Constants
 import com.example.smombieapp.utils.LogUtil
 import com.example.smombieapp.view.MainActivity
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class StepService : Service(), SensorEventListener {
     private val mStepBinder: StepBinder = StepBinder()
-    private val screenBR = ScreenBR()
+    private val screenReceiver = ScreenReceiver()
     private val preferences = BaseApplication.useSharedPreference
 
     private var sensorManager: SensorManager? = null
     private var stepCountSensor: Sensor? = null
+    private var stepDetectorSensor:Sensor?= null
 
     private var wm: WindowManager? = null
     private var mView: View? = null
@@ -57,7 +59,7 @@ class StepService : Service(), SensorEventListener {
         }
 
         override fun onFinish() {
-            hideLockScreen()
+            hideLockScreen(false)
         }
     }
 
@@ -75,12 +77,17 @@ class StepService : Service(), SensorEventListener {
         return mStepBinder
     }
 
+    override fun onCreate() {
+        super.onCreate()
+        LogUtil.e("onCreate")
+    }
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-
+LogUtil.e("Start")
         if (intent.action == Constants.STEP_SERVICE_START) {
             sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+            stepDetectorSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR)
             stepCountSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
-            if (stepCountSensor != null) {
+            if (stepDetectorSensor != null || stepCountSensor != null) {
                 sensorRegisterManager()
                 screenRegisterReceiver()
                 onStartFore()
@@ -92,7 +99,7 @@ class StepService : Service(), SensorEventListener {
             onStopFore()
         }
 
-        return START_NOT_STICKY
+        return START_REDELIVER_INTENT
 
     }
 
@@ -102,6 +109,20 @@ class StepService : Service(), SensorEventListener {
     }
 
     override fun onSensorChanged(event: SensorEvent) {
+        if(event.sensor.type == Sensor.TYPE_STEP_DETECTOR){
+            if (callback != null) {
+                LogUtil.e("스텝 카운트0: ${event.values[0]}, $smombieStep")
+                countDownTimer.cancel()
+                countDownTimer.start()
+
+
+                if (screenReceiver.isScreenON && !isLock) {
+                    LogUtil.e(screenReceiver.isScreenON ,isLock)
+                    isLock = true
+                    showLockScreen()
+                }
+            }
+        }
         if (event.sensor.type == Sensor.TYPE_STEP_COUNTER) {
             if (callback != null) {
                 if (step < 1) {
@@ -114,12 +135,11 @@ class StepService : Service(), SensorEventListener {
                 val stepCntStr = stepCnt.toInt().toString()
                 preferences.setPreferencesData(Constants.STEP_SERVICE_CNT,stepCntStr )
 
-
-
-                if(screenBR.isScreenON){
+                if(screenReceiver.isScreenON){
                     smombieStep++
                 }
                 LogUtil.e("스텝 카운트: ${event.values[0]}, $stepCntStr, $smombieStep")
+
 
                 callback!!.onStepCallback(stepCntStr)
 
@@ -127,9 +147,11 @@ class StepService : Service(), SensorEventListener {
                 countDownTimer.start()
 
                 if(mView!= null){
-                    lockScreenChangeStepCount(stepCntStr)
+                    lockScreenChangeStepCount(smombieStep.toString())
                 }
-                if (screenBR.isScreenON && !isLock) {
+
+                if (screenReceiver.isScreenON && !isLock) {
+                    LogUtil.e(screenReceiver.isScreenON ,isLock,"FDSFSDF")
                     isLock = true
                     showLockScreen()
                 }
@@ -141,9 +163,9 @@ class StepService : Service(), SensorEventListener {
 
     /** 스몸비 시작 */
     private fun onStartFore() {
+        preferences.setPreferencesData(Constants.START_SERVICE_TIME,BaseApplication().getDateTime())
         preferences.setPreferencesData(Constants.IS_STEP_SERVICE, "Y")
         isService = preferences.getPreferencesData(Constants.IS_STEP_SERVICE)
-
         showNotification()
     }
 
@@ -154,6 +176,12 @@ class StepService : Service(), SensorEventListener {
 
     /** 센서 등록 */
     private fun sensorRegisterManager() {
+        sensorManager?.registerListener(
+                this,
+                stepDetectorSensor,
+                SensorManager.SENSOR_DELAY_FASTEST
+        )
+
         sensorManager?.registerListener(
                 this,
                 stepCountSensor,
@@ -172,13 +200,13 @@ class StepService : Service(), SensorEventListener {
             addAction(Intent.ACTION_SCREEN_ON)
             addAction(Intent.ACTION_SCREEN_OFF)
         }
-        registerReceiver(screenBR, intentFilter);
+        registerReceiver(screenReceiver, intentFilter);
     }
 
     /** 스크린 리시버 해제 */
     private fun screenUnregisterReceiver() {
         try {
-            unregisterReceiver(screenBR)
+            unregisterReceiver(screenReceiver)
         } catch (e: IllegalArgumentException) {
         } catch (e: Exception) {
         } finally {
@@ -249,10 +277,26 @@ class StepService : Service(), SensorEventListener {
         wm = getSystemService(Context.WINDOW_SERVICE) as WindowManager
         mView = inflate.inflate(R.layout.lock_screen_view, null, false)
 
-        val lockScreenBtn = mView!!.findViewById<Button>(R.id.lock_screen_btn)
-        lockScreenBtn.setOnClickListener {
+        val lockScreenBtnExit = mView!!.findViewById<Button>(R.id.lock_screen_btn_exit)
+        lockScreenBtnExit.setOnClickListener {
             onDestroy()
-            hideLockScreen()
+            hideLockScreen(false)
+        }
+
+        val lockScreenBtnCall = mView!!.findViewById<Button>(R.id.lock_screen_btn_call)
+        lockScreenBtnCall.setOnClickListener {
+
+            val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:")).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            startActivity(intent)
+
+            // 3초동안 잠금화면 풀기
+            hideLockScreen(true)
+            Handler(Looper.getMainLooper()).postDelayed({
+                isLock = false
+            },3000)
+
         }
 
         wm?.addView(mView, params)
@@ -260,12 +304,12 @@ class StepService : Service(), SensorEventListener {
     }
 
     /** 잠금화면 해제 */
-    private fun hideLockScreen() {
+    private fun hideLockScreen(isLock:Boolean) {
         countDownTimer.cancel()
         wm?.removeView(mView)
         mView = null
         wm = null
-        isLock = false
+        this.isLock = isLock
     }
 
     /** 잠금화면 걸음 수 카운트*/
@@ -274,12 +318,23 @@ class StepService : Service(), SensorEventListener {
         lockScreenStepCnt.text = cnt
     }
 
+    fun setIsLock(state: Boolean){
+        isLock = state
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         LogUtil.e("스몸비 종료")
         stopForeground(true)
         reset()
+        preferences.setPreferencesData(Constants.STOP_SERVICE_TIME, BaseApplication().getDateTime())
+        preferences.setPreferencesData(Constants.SMOMBIE_STEP, smombieStep.toInt().toString())
         callback?.onStopService()
+    }
+
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        super.onTaskRemoved(rootIntent)
+        LogUtil.e("onTaskRemoved")
     }
 
 }

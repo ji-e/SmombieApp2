@@ -16,5 +16,7 @@ object Constants {
 
 
     const val EXCEL_FILE_NAME = "smombieApp_log"
-
+    const val START_SERVICE_TIME = "START_SERVICE_TIME"
+    const val STOP_SERVICE_TIME = "STOP_SERVICE_TIME"
+    const val SMOMBIE_STEP = "SMOMBIE_STEP"
 }

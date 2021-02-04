@@ -5,12 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white"
+    android:background="@color/color_242424"
     android:padding="@dimen/dimen_50dp">
 
 
     <TextView
-        style="@style/Font_20_000000"
+        style="@style/Font_20_FFFFFF"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        style="@style/Font_14_000000"
+        style="@style/Font_14_FFFFFF"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dimen_20dp"
@@ -30,7 +30,7 @@
 
     <TextView
         android:id="@+id/lock_screen_step_cnt"
-        style="@style/Font_74_000000"
+        style="@style/Font_74_FFFFFF"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dimen_20dp"
@@ -39,12 +39,40 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="0" />
 
+    <TextView
+        android:id="@+id/lock_screen_msg"
+        style="@style/Font_14_FFFFFF"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_20dp"
+        android:layout_marginBottom="@dimen/dimen_10dp"
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/lock_screen_view_msg" />
+
+
     <Button
         android:background="@color/purple_500"
-        android:id="@+id/lock_screen_btn"
+        android:id="@+id/lock_screen_btn_exit"
         style="@style/Font_16_FFFFFF"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimen_50dp"
         android:text="@string/btn_exit" />
+
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+
+    <Button
+        android:background="@color/purple_500"
+        android:id="@+id/lock_screen_btn_call"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        style="@style/Font_16_FFFFFF"
+        android:text="@string/btn_call"/>
 
 </LinearLayout>

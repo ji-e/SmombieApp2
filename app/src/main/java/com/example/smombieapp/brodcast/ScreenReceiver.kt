@@ -7,7 +7,7 @@ import android.content.IntentFilter
 import com.example.smombieapp.utils.LogUtil
 
 
-class ScreenBR : BroadcastReceiver() {
+class ScreenReceiver : BroadcastReceiver() {
     var isScreenON = true
     override fun onReceive(context: Context?, intent: Intent?) {
         val action = intent!!.action

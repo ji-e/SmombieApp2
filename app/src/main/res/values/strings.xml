@@ -4,7 +4,8 @@
     <string name="notification_body">스몸비 방지 실행 중</string>
 
     <string name="btn_confirm">확인</string>
-    <string name="btn_exit">종료</string>
+    <string name="btn_exit">서비스 종료</string>
+    <string name="btn_call">전화</string>
 
     <string name="permission_title">권한 설정</string>
 
@@ -16,4 +17,5 @@
 
     <string name="lock_screen_view_title">스몸비 방지 실행 중</string>
     <string name="lock_screen_view_step_cnt">걸음 수 </string>
+    <string name="lock_screen_view_msg">걸음 멈춘 10초후 unlock </string>
 </resources>

@@ -86,13 +86,15 @@ class PermissionActivity : BaseActivity() {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                     arrayOf(
                             Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        android.Manifest.permission.READ_PHONE_STATE
                     )
                 } else {
                     arrayOf(
                             Manifest.permission.ACTIVITY_RECOGNITION,
                             Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        android.Manifest.permission.READ_PHONE_STATE
                     )
                 }
 
@@ -111,7 +113,7 @@ class PermissionActivity : BaseActivity() {
 
     /** 권한설정 */
     private fun setPermission() {
-        if(!permissionList.isEmpty()) {
+        if(permissionList.isNotEmpty()) {
 
             val permissionArr = arrayOfNulls<String>(permissionList.size)
             for (i in 0 until permissionList.size) {

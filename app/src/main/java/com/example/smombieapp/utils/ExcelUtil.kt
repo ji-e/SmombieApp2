@@ -1,7 +1,5 @@
 package com.example.smombieapp.utils
 
-import android.widget.Toast
-import com.example.smombieapp.R
 import com.example.smombieapp.base.BaseApplication
 import org.apache.poi.ss.usermodel.Cell
 import org.apache.poi.ss.usermodel.Row
@@ -27,7 +25,7 @@ class ExcelUtil {
      * return Boolean
      * true: 있음, false: 없음
      */
-    private fun fileExists(): Boolean {
+     fun fileExists(): Boolean {
         val dir = File(fileDir)
         if (!dir.isDirectory && !dir.exists()) dir.mkdirs()
         if (!dir.exists()) dir.createNewFile()
@@ -36,52 +34,67 @@ class ExcelUtil {
         return  file.exists()
     }
 
-    private fun makeExcelFile() {
-        val row = sheet.createRow(0)
-        val cell = row.createCell(0)
+     fun makeExcelFile() {
         try {
+            val row = sheet.createRow(0)
+            val serviceStartTime: Cell = row.createCell(0)
+            serviceStartTime.setCellValue("Service Start Time")
+
+            val serviceStopTime: Cell = row.createCell(1)
+            serviceStopTime.setCellValue("Service Stop Time")
+
+            val smombieStep: Cell = row.createCell(2)
+            smombieStep.setCellValue("Smombie Step")
+
+
             val file = File(fileName)
             val os = FileOutputStream(file)
             wb.write(os)
             os.close()
-
+            insertExcelCell()
         } catch (e: IOException) {
 
         }
     }
 
     fun insertExcelCell(){
-        if(!fileExists()){
-            makeExcelFile()
-            return
-        }
+//        if(!fileExists()){
+//            makeExcelFile()
+//        }
         try{
-            val myFile_ED = File(BaseApplication.FILE_PATH_NAME + "exer$strDate.xlsx")
-            val inputStream_ED = FileInputStream(myFile_ED)
 
-            val workbook_ED = XSSFWorkbook(inputStream_ED)
-            val sheet_ED = workbook_ED.getSheetAt(0)
-            val riterator_ED: Iterator<Row> = sheet_ED.iterator()
-            val row_ED: Row = sheet_ED.createRow(sheet_ED.lastRowNum + 1)
-            if (sheet_ED.lastRowNum == 0) {
+            LogUtil.e("makeExcel")
+            val file = File(fileName)
+            val fis = FileInputStream(file)
+
+            wb= XSSFWorkbook(fis)
+            val sheet = wb.getSheetAt(0)
+//            val riterator_ED: Iterator<Row> = sheet.iterator()
+            val row: Row = sheet.createRow(sheet.lastRowNum + 1)
+            val serviceStartTime: Cell = row.createCell(0)
+            val serviceStopTime: Cell = row.createCell(1)
+            val smombieStep: Cell = row.createCell(2)
+            if (sheet.lastRowNum == 0) {
+//                serviceStartTime.setCellValue("Service Start Time")
+//                serviceStopTime.setCellValue("Service Stop Time")
+//                smombieStep.setCellValue("Smombie Step")
+
+            }else {
+                val preferences = BaseApplication.useSharedPreference
+                val start = preferences.getPreferencesData(Constants.START_SERVICE_TIME)
+                val stop = preferences.getPreferencesData(Constants.STOP_SERVICE_TIME)
+                val step = preferences.getPreferencesData(Constants.SMOMBIE_STEP)
+                serviceStartTime.setCellValue(start)
+                serviceStopTime.setCellValue(stop)
+                smombieStep.setCellValue(step)
             }
+            val os = FileOutputStream(file)
+            wb.write(os)
 
-            val StartTime_ED: Cell = row_ED.createCell(0)
-            StartTime_ED.setCellValue("your data")
-
-            val NoofDevice_ED: Cell = row_ED.createCell(1)
-            NoofDevice_ED.setCellValue("your data")
-
-            val Device_ID_ED: Cell = row_ED.createCell(2)
-            Device_ID_ED.setCellValue("your data")
-
-
-            val os_ED = FileOutputStream(myFile_ED)
-            workbook_ED.write(os_ED)
-
-            os_ED.close()
-            workbook_ED.close()
-            inputStream_ED.close()
+            os.close()
+            wb.close()
+            fis.close()
+            LogUtil.e("끝ㅌㅌㅌ")
         }catch (e: IOException){
 
         }

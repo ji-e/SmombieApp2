@@ -104,6 +104,12 @@
         <item name="android:includeFontPadding">false</item>
     </style>
 
+    <style name="Font_20_FFFFFF">
+        <item name="android:textColor">@color/color_FFFFFF</item>
+        <item name="android:textSize">@dimen/dimen_20dp</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
     <style name="Font_20_4E4BE8">
         <item name="android:textColor">@color/color_4E4BE8</item>
         <item name="android:textSize">@dimen/dimen_20dp</item>
@@ -130,6 +136,12 @@
 
     <style name="Font_74_000000">
         <item name="android:textColor">@color/color_000000</item>
+        <item name="android:textSize">@dimen/dimen_74dp</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Font_74_FFFFFF">
+        <item name="android:textColor">@color/color_FFFFFF</item>
         <item name="android:textSize">@dimen/dimen_74dp</item>
         <item name="android:includeFontPadding">false</item>
     </style>
