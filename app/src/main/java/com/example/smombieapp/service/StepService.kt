@@ -1,6 +1,9 @@
 package com.example.smombieapp.service
 
-import android.app.*
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -11,11 +14,7 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.net.Uri
 import android.os.*
-import android.telecom.TelecomManager
-import android.telephony.CellLocation
-import android.telephony.PhoneStateListener
-import android.telephony.TelephonyDisplayInfo
-import android.telephony.TelephonyManager
+import android.os.Process.THREAD_PRIORITY_BACKGROUND
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
@@ -25,17 +24,33 @@ import androidx.core.app.NotificationCompat
 import com.example.smombieapp.R
 import com.example.smombieapp.base.BaseApplication
 import com.example.smombieapp.brodcast.ScreenReceiver
+import com.example.smombieapp.brodcast.SmombieReceiver
 import com.example.smombieapp.utils.Constants
 import com.example.smombieapp.utils.LogUtil
 import com.example.smombieapp.view.MainActivity
-import java.text.SimpleDateFormat
-import java.util.*
 
 
 class StepService : Service(), SensorEventListener {
+    inner class StepServiceHandler(looper: Looper?) : Handler(looper!!) {
+        override fun handleMessage(msg: Message) {
+            // 우리가 수행하고 싶은 작업을 여기에 선언한다.
+            try {
+                LogUtil.e("serviceservice")
+            } catch (e: InterruptedException) {
+                Thread.currentThread().interrupt()
+                LogUtil.e("serviceservice1223")
+            }
+//            stopSelf(msg.arg1)
+        }
+    }
+
     private val mStepBinder: StepBinder = StepBinder()
     private val screenReceiver = ScreenReceiver()
+    private val smombieReceiver = SmombieReceiver()
     private val preferences = BaseApplication.useSharedPreference
+
+    private var serviceLooper: Looper? = null
+    private var serviceHandler: StepServiceHandler? = null
 
     private var sensorManager: SensorManager? = null
     private var stepCountSensor: Sensor? = null
@@ -53,7 +68,7 @@ class StepService : Service(), SensorEventListener {
             if (preferences.getPreferencesData(Constants.STEP_SERVICE_CNT).isEmpty()) 0f
             else preferences.getPreferencesData(Constants.STEP_SERVICE_CNT).toFloat()
 
-    private val countDownTimer = object : CountDownTimer(10 * 1000, 1000) {
+    private val countDownTimer = object : CountDownTimer(3000, 1000) {
         override fun onTick(millisUntilFinished: Long) {
 //            LogUtil.e("seconds remaining: " + millisUntilFinished / 1000)
         }
@@ -73,17 +88,32 @@ class StepService : Service(), SensorEventListener {
         this.callback = callback
     }
 
-    override fun onBind(intent: Intent): IBinder {
+    override fun onBind(intent: Intent): IBinder? {
         return mStepBinder
     }
 
     override fun onCreate() {
         super.onCreate()
         LogUtil.e("onCreate")
+        // Main Thread가 아닌 새로운 스레드에서 서비스를 실행한다.
+        // 새로운 스레드에서 실행하면 UI Blocking을 방지할 수 있다.
+        val thread = HandlerThread("ServiceStartArguments",
+               THREAD_PRIORITY_BACKGROUND)
+        thread.start()
+
+        // 새로운 스레드의 Looper를 핸들러에 전달한다.
+        serviceLooper = thread.looper
+        serviceHandler = StepServiceHandler(serviceLooper)
     }
+
+
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-LogUtil.e("Start")
-        if (intent.action == Constants.STEP_SERVICE_START) {
+        LogUtil.e("Start")
+        Thread.setDefaultUncaughtExceptionHandler(exxx())
+            val msg = serviceHandler!!.obtainMessage()
+            msg.arg1 = startId
+            serviceHandler!!.sendMessage(msg)
+
             sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
             stepDetectorSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR)
             stepCountSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
@@ -94,13 +124,7 @@ LogUtil.e("Start")
             } else {
                 onStopFore()
             }
-
-        } else {
-            onStopFore()
-        }
-
-        return START_REDELIVER_INTENT
-
+        return START_STICKY
     }
 
     override fun onUnbind(intent: Intent): Boolean {
@@ -109,22 +133,20 @@ LogUtil.e("Start")
     }
 
     override fun onSensorChanged(event: SensorEvent) {
+        if (callback != null) {
         if(event.sensor.type == Sensor.TYPE_STEP_DETECTOR){
-            if (callback != null) {
-                LogUtil.e("스텝 카운트0: ${event.values[0]}, $smombieStep")
+
+                LogUtil.d("스텝 카운트0: ${event.values[0]}, $smombieStep")
                 countDownTimer.cancel()
                 countDownTimer.start()
 
 
                 if (screenReceiver.isScreenON && !isLock) {
-                    LogUtil.e(screenReceiver.isScreenON ,isLock)
                     isLock = true
                     showLockScreen()
                 }
-            }
         }
         if (event.sensor.type == Sensor.TYPE_STEP_COUNTER) {
-            if (callback != null) {
                 if (step < 1) {
                     step = event.values[0]
                     stepCnt = event.values[0] - step
@@ -138,20 +160,19 @@ LogUtil.e("Start")
                 if(screenReceiver.isScreenON){
                     smombieStep++
                 }
-                LogUtil.e("스텝 카운트: ${event.values[0]}, $stepCntStr, $smombieStep")
+                LogUtil.d("스텝 카운트: ${event.values[0]}, $stepCntStr, $smombieStep")
 
 
-                callback!!.onStepCallback(stepCntStr)
+                callback?.onStepCallback(stepCntStr)
 
                 countDownTimer.cancel()
                 countDownTimer.start()
 
                 if(mView!= null){
-                    lockScreenChangeStepCount(smombieStep.toString())
+                    lockScreenChangeStepCount(smombieStep.toInt().toString())
                 }
 
                 if (screenReceiver.isScreenON && !isLock) {
-                    LogUtil.e(screenReceiver.isScreenON ,isLock,"FDSFSDF")
                     isLock = true
                     showLockScreen()
                 }
@@ -167,6 +188,8 @@ LogUtil.e("Start")
         preferences.setPreferencesData(Constants.IS_STEP_SERVICE, "Y")
         isService = preferences.getPreferencesData(Constants.IS_STEP_SERVICE)
         showNotification()
+
+
     }
 
     /** 스몸비 종료 */
@@ -196,17 +219,27 @@ LogUtil.e("Start")
 
     /** 스크린 리시버 등록 */
     private fun screenRegisterReceiver() {
-        val intentFilter = IntentFilter().apply {
+        val screenIntentFilter = IntentFilter().apply {
             addAction(Intent.ACTION_SCREEN_ON)
             addAction(Intent.ACTION_SCREEN_OFF)
         }
-        registerReceiver(screenReceiver, intentFilter);
+
+        val smombieIntentFilter = IntentFilter().apply {
+            addAction(Intent.ACTION_PACKAGE_ADDED)
+            addAction(Intent.ACTION_PACKAGE_REPLACED)
+            addAction(Intent.ACTION_PACKAGE_REMOVED)
+            addAction(Intent.ACTION_SCREEN_OFF)
+            addDataScheme("smombie");
+        }
+        registerReceiver(smombieReceiver, smombieIntentFilter)
+        registerReceiver(screenReceiver, screenIntentFilter);
     }
 
     /** 스크린 리시버 해제 */
     private fun screenUnregisterReceiver() {
         try {
             unregisterReceiver(screenReceiver)
+            unregisterReceiver(smombieReceiver)
         } catch (e: IllegalArgumentException) {
         } catch (e: Exception) {
         } finally {
@@ -335,6 +368,13 @@ LogUtil.e("Start")
     override fun onTaskRemoved(rootIntent: Intent?) {
         super.onTaskRemoved(rootIntent)
         LogUtil.e("onTaskRemoved")
+    }
+
+    inner class exxx :Thread.UncaughtExceptionHandler{
+        override fun uncaughtException(t: Thread, e: Throwable) {
+            LogUtil.e(e)
+        }
+
     }
 
 }

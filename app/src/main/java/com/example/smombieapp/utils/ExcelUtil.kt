@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class ExcelUtil {
+    var excelCallback: ExcelCallback? = null
     val fileDir = BaseApplication.DIR
     val fileName = "${BaseApplication.FILE_PATH_NAME}${Constants.EXCEL_FILE_NAME}.xlsx"
     val strDate = SimpleDateFormat("yyyyMMdd", Locale.getDefault()).format(Date())
@@ -57,6 +58,7 @@ class ExcelUtil {
         }
     }
 
+
     fun insertExcelCell(){
 //        if(!fileExists()){
 //            makeExcelFile()
@@ -95,6 +97,8 @@ class ExcelUtil {
             wb.close()
             fis.close()
             LogUtil.e("끝ㅌㅌㅌ")
+            excelCallback?.onClose()
+
         }catch (e: IOException){
 
         }
@@ -143,5 +147,8 @@ class ExcelUtil {
 
     }
 
+    fun setExcellCallback(callback: ExcelCallback){
+        excelCallback = callback
+    }
 
 }

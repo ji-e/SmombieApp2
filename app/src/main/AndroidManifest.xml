@@ -21,15 +21,25 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SmombieApp">
         <receiver
+            android:name=".brodcast.SmombieReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_ADDED"/>
+                <action android:name="android.intent.action.PACKAGE_REMOVED"/>
+                <action android:name="android.intent.action.PACKAGE_REPLACED"/>
+                <data android:scheme="smombie"/>
+            </intent-filter>
+        </receiver>
+        <receiver
             android:name=".brodcast.CallReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.PHONE_STATE"/>
-                <action android:name="android.intent.action.BATTERY_LOW"/>
+                <action android:name="android.intent.action.PHONE_STATE" />
+                <action android:name="android.intent.action.BATTERY_LOW" />
             </intent-filter>
         </receiver>
-
         <receiver
             android:name=".brodcast.ScreenReceiver"
             android:enabled="true"
@@ -38,8 +48,7 @@
         <service
             android:name=".service.StepService"
             android:enabled="true"
-            android:exported="true"
-            android:stopWithTask="false"/>
+            android:exported="false" />
 
         <activity android:name=".view.intro.SplashActivity">
             <intent-filter>

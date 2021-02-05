@@ -70,7 +70,9 @@ object LogUtil {
         }
 
         Log.println(logLevel, "FITCA", log)
-        flog(log)
+
+        if(logLevel == Log.ERROR)
+            flog(log)
     }
 
     /**

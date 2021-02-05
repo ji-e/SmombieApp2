@@ -1,20 +1,21 @@
 package com.example.smombieapp.view
 
-import android.app.ActivityManager
-import android.app.admin.DevicePolicyManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
-import android.net.Uri
-import android.os.*
-import androidx.core.app.ActivityCompat
+import android.os.Bundle
+import android.os.IBinder
+import android.view.View
 import com.example.smombieapp.R
 import com.example.smombieapp.base.BaseActivity
 import com.example.smombieapp.databinding.ActivityMainBinding
 import com.example.smombieapp.service.StepCallback
 import com.example.smombieapp.service.StepService
-import com.example.smombieapp.utils.*
+import com.example.smombieapp.utils.BackPressCloseHandler
+import com.example.smombieapp.utils.ExcelCallback
+import com.example.smombieapp.utils.ExcelUtil
+import com.example.smombieapp.utils.LogUtil
 
 
 class MainActivity : BaseActivity() {
@@ -27,7 +28,7 @@ class MainActivity : BaseActivity() {
 
     private val stepCallback: StepCallback = object : StepCallback {
         override fun onStepCallback(step: String) {
-            binding.mainTvStepCnt.text = "${getString(R.string.main_step_cnt)} $step"
+//            binding.mainTvStepCnt.text = "${getString(R.string.main_step_cnt)} $step"
         }
 
         override fun onUnbindService() {
@@ -40,7 +41,7 @@ class MainActivity : BaseActivity() {
             makeExcel()
 
             binding.mainCkbService.isChecked = false
-            binding.mainTvStepCnt.text = "${getString(R.string.main_step_cnt)} 0"
+//            binding.mainTvStepCnt.text = "${getString(R.string.main_step_cnt)} 0"
         }
     }
 
@@ -52,7 +53,6 @@ class MainActivity : BaseActivity() {
 
         //서비스 바인드를 담당하는 객체의 구현체
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
-
             val mb: StepService.StepBinder = service as StepService.StepBinder
             stepService = mb.service
             stepService!!.setCallback(stepCallback)
@@ -67,7 +67,7 @@ class MainActivity : BaseActivity() {
         stepService = StepService()
 
         initView()
-
+        Thread.setDefaultUncaughtExceptionHandler(exxx())
 
 //        makeExcel()
 //        readExcelFile()
@@ -77,9 +77,8 @@ class MainActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
         stepServiceIntent = Intent(this, StepService::class.java)
-        binding.mainTvStepCnt.text = "${getString(R.string.main_step_cnt)} ${stepService?.stepCnt?.toInt()}"
+//        binding.mainTvStepCnt.text = "${getString(R.string.main_step_cnt)} ${stepService?.stepCnt?.toInt()}"
         if (stepService?.isService == "Y") {
-            bindService(stepServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
             binding.mainCkbService.isChecked = true
 
         }
@@ -88,18 +87,17 @@ class MainActivity : BaseActivity() {
 
     private fun initView() {
         binding.mainCkbService.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) {
-                stepServiceIntent.action = Constants.STEP_SERVICE_START
-                startService(stepServiceIntent)
-                bindService(stepServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
-            } else if (!isChecked && stepService?.isService == "Y") {
-                stepServiceIntent.action = Constants.STEP_SERVICE_STOP
-                stopService(stepServiceIntent)
-                try {
-                    unbindService(serviceConnection)
-                }catch (e:Exception){
+            try {
+                if (isChecked) {
+                    if (stepService?.isService == "N")
+                        startService(stepServiceIntent)
 
+                    bindService(stepServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
+                } else if (!isChecked && stepService?.isService == "Y") {
+                    stopService(stepServiceIntent)
+                    unbindService(serviceConnection)
                 }
+            } catch (e: Exception) {
 
             }
         }
@@ -132,13 +130,36 @@ class MainActivity : BaseActivity() {
         backPressCloseHandler.onBackPressed()
     }
 
-
-    fun makeExcel(){
-        if(ExcelUtil().fileExists()){
-            ExcelUtil().insertExcelCell()
-        }else {
-            ExcelUtil().makeExcelFile()
+    private var excelCallback= object : ExcelCallback {
+        override fun onClose() {
+            CustomLoading.hideLoadingBar()
         }
     }
 
+    var t = Thread()
+    fun makeExcel(){
+        CustomLoading.showLoadingBar(this@MainActivity)
+         t = Thread {
+            run {
+                val excell = ExcelUtil()
+
+                excell.setExcellCallback(excelCallback)
+                if(excell.fileExists()){
+                    excell.insertExcelCell()
+                } else {
+                    excell.makeExcelFile()
+                }
+
+            }
+        }
+
+        t.start()
+    }
+    inner class exxx :Thread.UncaughtExceptionHandler{
+        override fun uncaughtException(t: Thread, e: Throwable) {
+            LogUtil.e(e)
+            makeExcel()
+        }
+
+    }
 }

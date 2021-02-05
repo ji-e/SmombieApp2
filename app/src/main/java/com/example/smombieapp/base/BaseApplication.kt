@@ -20,6 +20,7 @@ class BaseApplication :Application(){
       return  SimpleDateFormat("yyyyMMdd_HH:mm:ss", Locale.getDefault()).format(Date())
     }
 
+
     override fun onCreate() {
         super.onCreate()
         instance = this
