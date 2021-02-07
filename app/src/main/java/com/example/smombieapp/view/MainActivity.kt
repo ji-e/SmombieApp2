@@ -6,22 +6,20 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
-import android.view.View
-import com.example.smombieapp.R
 import com.example.smombieapp.base.BaseActivity
 import com.example.smombieapp.databinding.ActivityMainBinding
 import com.example.smombieapp.service.StepCallback
 import com.example.smombieapp.service.StepService
-import com.example.smombieapp.utils.BackPressCloseHandler
-import com.example.smombieapp.utils.ExcelCallback
-import com.example.smombieapp.utils.ExcelUtil
-import com.example.smombieapp.utils.LogUtil
+import com.example.smombieapp.utils.*
+import java.util.*
 
 
 class MainActivity : BaseActivity() {
     private lateinit var binding: ActivityMainBinding
-    private val backPressCloseHandler by lazy {  BackPressCloseHandler(this)}
+    private val backPressCloseHandler by lazy { BackPressCloseHandler(this) }
     private var stepService: StepService? = null
+
+    private val db by lazy { DBHelper(this)}
 
 
     private lateinit var stepServiceIntent: Intent
@@ -37,10 +35,10 @@ class MainActivity : BaseActivity() {
 
         override fun onStopService() {
             LogUtil.e("stopService")
+            stopUpdate()
+//            makeExcel()
 
-            makeExcel()
-
-            binding.mainCkbService.isChecked = false
+//            binding.mainCkbService.isChecked = false
 //            binding.mainTvStepCnt.text = "${getString(R.string.main_step_cnt)} 0"
         }
     }
@@ -56,6 +54,7 @@ class MainActivity : BaseActivity() {
             val mb: StepService.StepBinder = service as StepService.StepBinder
             stepService = mb.service
             stepService!!.setCallback(stepCallback)
+            startInsert()
             LogUtil.e("connected")
         }
     }
@@ -76,9 +75,10 @@ class MainActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
+        LogUtil.d(StepService.isService)
         stepServiceIntent = Intent(this, StepService::class.java)
 //        binding.mainTvStepCnt.text = "${getString(R.string.main_step_cnt)} ${stepService?.stepCnt?.toInt()}"
-        if (stepService?.isService == "Y") {
+        if (StepService.isService) {
             binding.mainCkbService.isChecked = true
 
         }
@@ -86,20 +86,23 @@ class MainActivity : BaseActivity() {
 
 
     private fun initView() {
+        getDayList()
         binding.mainCkbService.setOnCheckedChangeListener { buttonView, isChecked ->
             try {
-                if (isChecked) {
-                    if (stepService?.isService == "N")
-                        startService(stepServiceIntent)
-
+                if (isChecked && !StepService.isService) {
+                    startService(stepServiceIntent)
                     bindService(stepServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
-                } else if (!isChecked && stepService?.isService == "Y") {
+                } else if (!isChecked && StepService.isService) {
+//                    makeExcel()
                     stopService(stepServiceIntent)
                     unbindService(serviceConnection)
                 }
             } catch (e: Exception) {
 
             }
+        }
+        binding.mainBtnLog.setOnClickListener {
+            startActivity(Intent(this, LogActivity::class.java))
         }
 
 
@@ -121,8 +124,11 @@ class MainActivity : BaseActivity() {
     override fun onStop() {
         super.onStop()
         //액티비티를 벗어났을 땐 서비스와 액티비티의 바인드를 끊어줌 : 백그라운드에서 UI를 건들지 않게 하기 위함
-        if (stepService?.isService == "Y") {
-            unbindService(serviceConnection)
+//        try {
+//
+//        } catch (e:java.lang.Exception)
+        if (StepService.isService) {
+//            unbindService(serviceConnection)
         }
     }
 
@@ -130,21 +136,21 @@ class MainActivity : BaseActivity() {
         backPressCloseHandler.onBackPressed()
     }
 
-    private var excelCallback= object : ExcelCallback {
+    private var excelCallback = object : ExcelCallback {
         override fun onClose() {
-            CustomLoading.hideLoadingBar()
+//            CustomLoading.hideLoadingBar()
         }
     }
 
     var t = Thread()
-    fun makeExcel(){
+    fun makeExcel() {
         CustomLoading.showLoadingBar(this@MainActivity)
-         t = Thread {
+        t = Thread {
             run {
                 val excell = ExcelUtil()
 
                 excell.setExcellCallback(excelCallback)
-                if(excell.fileExists()){
+                if (excell.fileExists()) {
                     excell.insertExcelCell()
                 } else {
                     excell.makeExcelFile()
@@ -155,11 +161,47 @@ class MainActivity : BaseActivity() {
 
         t.start()
     }
-    inner class exxx :Thread.UncaughtExceptionHandler{
+
+    inner class exxx : Thread.UncaughtExceptionHandler {
         override fun uncaughtException(t: Thread, e: Throwable) {
-            LogUtil.e(e)
-            makeExcel()
+            LogUtil.e(t, e)
+//            makeExcel()
         }
 
+    }
+
+    fun getDayList() {
+        sfdsdf()
+        var cursor = db.selectAll()
+
+
+        while (cursor.moveToNext()) {
+            LogUtil.d(
+                    cursor.getInt(0),
+                    cursor.getString(1),
+                    cursor.getString(2),
+                    cursor.getString(3),
+                    cursor.getString(4),
+                    cursor.getString(5))
+        }
+    }
+
+    fun sfdsdf() {
+//        DBHelper(this).insert("1", "@", "3", "$", "%")
+    }
+
+
+   private fun startInsert(){
+       val strDate = StepService.startServiceDate
+       val strTime = StepService.startServiceTime
+        db.insert(strDate,strTime,"","","")
+    }
+
+    private fun stopUpdate(){
+        val strDate = StepService.startServiceDate
+        val strStartTime = StepService.startServiceTime
+        val strEndTime = StepService.endServiceTime
+        val strStep = StepService.smombieStep.toInt().toString()
+        db.update(strDate,strStartTime, strEndTime,"총시간",strStep)
     }
 }

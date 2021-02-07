@@ -1,6 +1,7 @@
 package com.example.smombieapp.utils
 
 import com.example.smombieapp.base.BaseApplication
+import com.example.smombieapp.service.StepService
 import org.apache.poi.ss.usermodel.Cell
 import org.apache.poi.ss.usermodel.Row
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
@@ -83,9 +84,12 @@ class ExcelUtil {
 
             }else {
                 val preferences = BaseApplication.useSharedPreference
-                val start = preferences.getPreferencesData(Constants.START_SERVICE_TIME)
-                val stop = preferences.getPreferencesData(Constants.STOP_SERVICE_TIME)
-                val step = preferences.getPreferencesData(Constants.SMOMBIE_STEP)
+//                val start = preferences.getPreferencesData(Constants.START_SERVICE_TIME)
+//                val stop = preferences.getPreferencesData(Constants.STOP_SERVICE_TIME)
+//                val step = preferences.getPreferencesData(Constants.SMOMBIE_STEP)
+                val start = StepService.startServiceTime
+                val stop = StepService.endServiceTime
+                val step = StepService.smombieStep.toInt().toString()
                 serviceStartTime.setCellValue(start)
                 serviceStopTime.setCellValue(stop)
                 smombieStep.setCellValue(step)

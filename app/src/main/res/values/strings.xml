@@ -6,6 +6,7 @@
     <string name="btn_confirm">확인</string>
     <string name="btn_exit">서비스 종료</string>
     <string name="btn_call">전화</string>
+    <string name="btn_log">로그</string>
 
     <string name="permission_title">권한 설정</string>
 

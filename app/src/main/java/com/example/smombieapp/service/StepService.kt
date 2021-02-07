@@ -14,7 +14,6 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.net.Uri
 import android.os.*
-import android.os.Process.THREAD_PRIORITY_BACKGROUND
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
@@ -43,6 +42,13 @@ class StepService : Service(), SensorEventListener {
 //            stopSelf(msg.arg1)
         }
     }
+    companion object{
+        var isService = false
+        var startServiceDate =""
+        var startServiceTime = ""
+        var endServiceTime = ""
+        var smombieStep=0f
+    }
 
     private val mStepBinder: StepBinder = StepBinder()
     private val screenReceiver = ScreenReceiver()
@@ -59,14 +65,14 @@ class StepService : Service(), SensorEventListener {
     private var wm: WindowManager? = null
     private var mView: View? = null
 
-    var isService = preferences.getPreferencesData(Constants.IS_STEP_SERVICE)
+//    var isService = preferences.getPreferencesData(Constants.IS_STEP_SERVICE)
     var isLock = false
 
-    var smombieStep=0f
+//    var smombieStep=0f
     var step = 0f
-    var stepCnt =
-            if (preferences.getPreferencesData(Constants.STEP_SERVICE_CNT).isEmpty()) 0f
-            else preferences.getPreferencesData(Constants.STEP_SERVICE_CNT).toFloat()
+    var stepCnt =0f
+//            if (preferences.getPreferencesData(Constants.STEP_SERVICE_CNT).isEmpty()) 0f
+//            else preferences.getPreferencesData(Constants.STEP_SERVICE_CNT).toFloat()
 
     private val countDownTimer = object : CountDownTimer(3000, 1000) {
         override fun onTick(millisUntilFinished: Long) {
@@ -94,25 +100,26 @@ class StepService : Service(), SensorEventListener {
 
     override fun onCreate() {
         super.onCreate()
+        Thread.setDefaultUncaughtExceptionHandler(exxx())
         LogUtil.e("onCreate")
         // Main Thread가 아닌 새로운 스레드에서 서비스를 실행한다.
         // 새로운 스레드에서 실행하면 UI Blocking을 방지할 수 있다.
-        val thread = HandlerThread("ServiceStartArguments",
-               THREAD_PRIORITY_BACKGROUND)
-        thread.start()
-
-        // 새로운 스레드의 Looper를 핸들러에 전달한다.
-        serviceLooper = thread.looper
-        serviceHandler = StepServiceHandler(serviceLooper)
+//        val thread = HandlerThread("ServiceStartArguments",
+//               THREAD_PRIORITY_BACKGROUND)
+//        thread.start()
+//
+//        // 새로운 스레드의 Looper를 핸들러에 전달한다.
+//        serviceLooper = thread.looper
+//        serviceHandler = StepServiceHandler(serviceLooper)
     }
 
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         LogUtil.e("Start")
-        Thread.setDefaultUncaughtExceptionHandler(exxx())
-            val msg = serviceHandler!!.obtainMessage()
-            msg.arg1 = startId
-            serviceHandler!!.sendMessage(msg)
+
+//            val msg = serviceHandler!!.obtainMessage()
+//            msg.arg1 = startId
+//            serviceHandler!!.sendMessage(msg)
 
             sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
             stepDetectorSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR)
@@ -145,17 +152,16 @@ class StepService : Service(), SensorEventListener {
                     isLock = true
                     showLockScreen()
                 }
-        }
-        if (event.sensor.type == Sensor.TYPE_STEP_COUNTER) {
+        } else if (event.sensor.type == Sensor.TYPE_STEP_COUNTER) {
                 if (step < 1) {
                     step = event.values[0]
                     stepCnt = event.values[0] - step
-                    preferences.setPreferencesData(Constants.STEP_SERVICE_CNT, stepCnt.toInt().toString())
+//                    preferences.setPreferencesData(Constants.STEP_SERVICE_CNT, stepCnt.toInt().toString())
                     return
                 }
                 stepCnt = event.values[0] - step
                 val stepCntStr = stepCnt.toInt().toString()
-                preferences.setPreferencesData(Constants.STEP_SERVICE_CNT,stepCntStr )
+//                preferences.setPreferencesData(Constants.STEP_SERVICE_CNT,stepCntStr )
 
                 if(screenReceiver.isScreenON){
                     smombieStep++
@@ -184,12 +190,14 @@ class StepService : Service(), SensorEventListener {
 
     /** 스몸비 시작 */
     private fun onStartFore() {
-        preferences.setPreferencesData(Constants.START_SERVICE_TIME,BaseApplication().getDateTime())
-        preferences.setPreferencesData(Constants.IS_STEP_SERVICE, "Y")
-        isService = preferences.getPreferencesData(Constants.IS_STEP_SERVICE)
+        isService = true
+        startServiceDate = BaseApplication().getDateDate()
+        startServiceTime = BaseApplication().getDateTime()
+
+//        preferences.setPreferencesData(Constants.START_SERVICE_TIME,BaseApplication().getDateTime())
+//        preferences.setPreferencesData(Constants.IS_STEP_SERVICE, "Y")
+//        isService = preferences.getPreferencesData(Constants.IS_STEP_SERVICE)
         showNotification()
-
-
     }
 
     /** 스몸비 종료 */
@@ -208,7 +216,7 @@ class StepService : Service(), SensorEventListener {
         sensorManager?.registerListener(
                 this,
                 stepCountSensor,
-                SensorManager.SENSOR_DELAY_GAME
+                SensorManager.SENSOR_DELAY_FASTEST
         )
     }
 
@@ -256,8 +264,9 @@ class StepService : Service(), SensorEventListener {
                 NotificationCompat.Builder(applicationContext, Constants.CHANNEL_ID)
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentText(getString(R.string.notification_body))
-                        .setAutoCancel(true)
+                        .setAutoCancel(false)
                         .setContentIntent(pendingIntent)
+                        .setShowWhen(false)
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -276,9 +285,10 @@ class StepService : Service(), SensorEventListener {
 
     /** 초기화 */
     private fun reset() {
-        preferences.setPreferencesData(Constants.IS_STEP_SERVICE, "N")
-        preferences.setPreferencesData(Constants.STEP_SERVICE_CNT, "0")
-        isService = preferences.getPreferencesData(Constants.IS_STEP_SERVICE)
+//        preferences.setPreferencesData(Constants.IS_STEP_SERVICE, "N")
+//        preferences.setPreferencesData(Constants.STEP_SERVICE_CNT, "0")
+        isService = false
+//        isService = preferences.getPreferencesData(Constants.IS_STEP_SERVICE)
         stepCnt = 0f
         step = 0f
         countDownTimer.cancel()
@@ -360,7 +370,8 @@ class StepService : Service(), SensorEventListener {
         LogUtil.e("스몸비 종료")
         stopForeground(true)
         reset()
-        preferences.setPreferencesData(Constants.STOP_SERVICE_TIME, BaseApplication().getDateTime())
+        endServiceTime = BaseApplication().getDateTime()
+//        preferences.setPreferencesData(Constants.STOP_SERVICE_TIME, BaseApplication().getDateTime())
         preferences.setPreferencesData(Constants.SMOMBIE_STEP, smombieStep.toInt().toString())
         callback?.onStopService()
     }

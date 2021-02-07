@@ -3,7 +3,8 @@ package com.example.smombieapp.utils
 object Constants {
     const val CHECK_PERMISSION = 1000
     const val CHECK_OVERLAY_PERMISSION = 1001
-    const val NOTIFICATION_ID = 2000
+    const val CHECK_IGNORE_BATTERY_OPTIMIZATION = 1002
+    const val NOTIFICATION_ID = 1
 
 
     const val STEP_SERVICE_START = "STEP_SERVICE_START"

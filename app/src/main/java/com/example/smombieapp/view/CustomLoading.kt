@@ -4,13 +4,13 @@ import android.app.Dialog
 
 import android.content.Context
 import com.example.smombieapp.R
+import com.example.smombieapp.utils.LogUtil
 
 
 class CustomLoading{
         companion object {
             private var mLoadingBar: Dialog? = null
-            fun createCustomLoadingBarDialog(mContext: Context): Dialog {
-
+            private fun createCustomLoadingBarDialog(mContext: Context): Dialog {
                 mLoadingBar = Dialog(mContext, R.style.Loading).apply {
                     setCancelable(false)
                     setContentView(R.layout.loading)

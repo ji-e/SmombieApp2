@@ -27,7 +27,7 @@ open class BaseActivity:AppCompatActivity() {
 
     inner class exxx :Thread.UncaughtExceptionHandler{
         override fun uncaughtException(t: Thread, e: Throwable) {
-            LogUtil.e(e)
+            LogUtil.e(this@BaseActivity,e)
         }
 
     }
