@@ -8,61 +8,46 @@
     android:padding="@dimen/dimen_16dp"
     tools:context=".view.MainActivity">
 
-
-    <CheckBox
-        style="@style/Font_14_000000"
-        android:id="@+id/main_ckb_service"
+    <TextView
+        android:id="@+id/main_tv_start_time"
+        style="@style/Font_16_000000"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/main_service_on"
+        android:text="@string/main_start_time"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/main_tv_service_state"
-        style="@style/Font_14_000000"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/main_service_state"
-        android:layout_marginTop="@dimen/dimen_26dp"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/main_ckb_service" />
 
-    <TextView
-        android:id="@+id/main_tv_step_cnt"
-        style="@style/Font_14_000000"
-        android:layout_width="match_parent"
+    <Switch
+        android:id="@+id/main_sw_service"
+        style="@style/Font_16_000000"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/main_step_cnt"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/main_ckb_service" />
+        android:showText="true"
+        android:switchTextAppearance="@style/Font_16_000000"
+        android:text="@string/main_service_on"
+        android:textOff="@string/btn_end"
+        android:textOn="@string/btn_start"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/main_tv_start_time" />
 
-    <TextView
-        style="@style/Font_14_000000"
-        android:visibility="gone"
-        android:id="@+id/main_tv_gps_stage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/main_gps_stage"
-        android:layout_marginTop="@dimen/dimen_30dp"
-        app:layout_constraintTop_toBottomOf="@id/main_tv_step_cnt"/>
-
-    <TextView
-        style="@style/Font_14_000000"
-        android:visibility="gone"
-        android:id="@+id/main_tv_location"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/main_location"
-        android:layout_marginTop="@dimen/dimen_05dp"
-        app:layout_constraintTop_toBottomOf="@id/main_tv_gps_stage"/>
 
     <Button
         android:id="@+id/main_btn_log"
+        style="@style/Font_14_FFFFFF"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/main_tv_gps_stage"
+        android:text="@string/btn_log"
         app:layout_constraintStart_toStartOf="parent"
-        android:text="@string/btn_log"/>
+        app:layout_constraintTop_toBottomOf="@id/main_sw_service" />
+
+    <Button
+        android:id="@+id/main_btn_bug"
+        style="@style/Font_14_FFFFFF"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_bug"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/main_btn_log" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

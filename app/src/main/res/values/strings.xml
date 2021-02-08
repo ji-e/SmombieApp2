@@ -4,12 +4,21 @@
     <string name="notification_body">스몸비 방지 실행 중</string>
 
     <string name="btn_confirm">확인</string>
+    <string name="btn_cancel">취소</string>
+    <string name="btn_start">ON</string>
+    <string name="btn_end">OFF</string>
     <string name="btn_exit">서비스 종료</string>
-    <string name="btn_call">전화</string>
+    <string name="btn_emergency">1분 긴급 해제</string>
     <string name="btn_log">로그</string>
+    <string name="btn_bug">버그 제보</string>
+
+
+    <string name="dialog_title">알림</string>
+    <string name="dialog_content">서비스를 종료하시겠습니까?</string>
 
     <string name="permission_title">권한 설정</string>
 
+    <string name="main_start_time">서비스 시작 시간: </string>
     <string name="main_service_state">서비스 상태: </string>
     <string name="main_service_on">서비스 실행</string>
     <string name="main_step_cnt">걸음 수:  </string>

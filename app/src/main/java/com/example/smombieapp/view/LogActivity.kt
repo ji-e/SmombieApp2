@@ -2,18 +2,20 @@ package com.example.smombieapp.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.smombieapp.base.BaseActivity
 import com.example.smombieapp.databinding.ActivityLogBinding
 import com.example.smombieapp.databinding.ActivityMainBinding
 import com.example.smombieapp.utils.DBHelper
 import com.example.smombieapp.utils.LogUtil
 
-class LogActivity : AppCompatActivity() {
+class LogActivity : BaseActivity() {
     private lateinit var binding: ActivityLogBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLogBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        Thread.setDefaultUncaughtExceptionHandler(UncaughtException())
         getLogList()
     }
 
@@ -29,7 +31,7 @@ class LogActivity : AppCompatActivity() {
                     cursor.getString(3),
                     cursor.getString(4),
                     cursor.getString(5))
-            sb.append("${cursor.getInt(0)}," +
+            sb.append("${cursor.getInt(0)}\n" +
                     "${cursor.getString(1)}," +
                     "${cursor.getString(2)}," +
                     "${cursor.getString(3)}," +
@@ -38,5 +40,13 @@ class LogActivity : AppCompatActivity() {
 
         }
         binding.logTv.text = sb.toString()
+    }
+
+
+    inner class UncaughtException : Thread.UncaughtExceptionHandler {
+        override fun uncaughtException(t: Thread, e: Throwable) {
+            LogUtil.e(t, e)
+        }
+
     }
 }

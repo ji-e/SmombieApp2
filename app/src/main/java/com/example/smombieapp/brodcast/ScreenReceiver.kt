@@ -11,7 +11,7 @@ class ScreenReceiver : BroadcastReceiver() {
     var isScreenON = true
     override fun onReceive(context: Context?, intent: Intent?) {
         val action = intent!!.action
-        LogUtil.e("isScreenON : $action")
+        LogUtil.d("isScreenON : $action")
 
         when (action) {
             Intent.ACTION_SCREEN_ON -> {

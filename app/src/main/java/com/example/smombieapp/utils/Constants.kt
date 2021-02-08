@@ -8,16 +8,14 @@ object Constants {
 
 
     const val STEP_SERVICE_START = "STEP_SERVICE_START"
-    const val STEP_SERVICE_STOP = "STEP_SERVICE_STOP"
-    const val STEP_SERVICE_CNT = "STEP_SERVICE_CNT"
+    const val STEP_SERVICE_END = "STEP_SERVICE_END"
     const val IS_STEP_SERVICE = "IS_STEP_SERVICE"
 
     const val CHANNEL_ID = "smombie"
     const val CHANNEL_NAME = "smombie"
 
-
     const val EXCEL_FILE_NAME = "smombieApp_log"
-    const val START_SERVICE_TIME = "START_SERVICE_TIME"
-    const val STOP_SERVICE_TIME = "STOP_SERVICE_TIME"
-    const val SMOMBIE_STEP = "SMOMBIE_STEP"
+
+    const val BUG_EMAIL="uohihi@gmail.com"
+
 }

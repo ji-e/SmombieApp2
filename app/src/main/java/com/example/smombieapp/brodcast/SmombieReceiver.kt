@@ -17,20 +17,22 @@ class SmombieReceiver : BroadcastReceiver() {
         when {
             action.equals(Intent.ACTION_PACKAGE_ADDED) -> {
                 // 앱이 설치되었을 때
+                LogUtil.e("ACTION_PACKAGE_ADDED")
+                smombieServiceStart(mContext)
             }
             action.equals(Intent.ACTION_PACKAGE_REMOVED) -> {
                 // 앱이 삭제되었을 때
-                LogUtil.e("appRemove")
+                LogUtil.e("ACTION_PACKAGE_REMOVED")
             }
             action.equals(Intent.ACTION_PACKAGE_REPLACED) -> {
                 // 앱이 업데이트 되었을 때
-                LogUtil.e("appUpdate")
+                LogUtil.e("ACTION_PACKAGE_REPLACED")
                 smombieServiceStart(mContext)
 
             }
             intent.action.equals(Intent.ACTION_BOOT_COMPLETED) -> {
                 // 폰이 부팅되었을 때
-                LogUtil.e("bootCompleted")
+                LogUtil.e("ACTION_BOOT_COMPLETED")
                 smombieServiceStart(mContext)
             }
         }
@@ -39,7 +41,9 @@ class SmombieReceiver : BroadcastReceiver() {
 
     private fun smombieServiceStart(mContext: Context) {
         if (BaseApplication.useSharedPreference.getPreferencesData(Constants.IS_STEP_SERVICE) == "Y") {
-            val i = Intent(mContext, StepService::class.java)
+            val i = Intent(mContext, StepService::class.java).apply {
+                action = Constants.STEP_SERVICE_START
+            }
             mContext.startService(i)
         }
     }

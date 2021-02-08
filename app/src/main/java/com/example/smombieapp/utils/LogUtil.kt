@@ -85,8 +85,8 @@ object LogUtil {
             val dir = File(BaseApplication.DIR)
             if (!dir.isDirectory && !dir.exists()) dir.mkdirs()
             if (!dir.exists()) dir.createNewFile()
-            val strDate = SimpleDateFormat("yyyyMMdd", Locale.getDefault()).format(Date())
-            val strTime = SimpleDateFormat("yyyyMMdd_hh:mm:ss", Locale.getDefault()).format(Date())
+            val strDate = SimpleDateFormat("yyyyMM", Locale.getDefault()).format(Date())
+            val strTime = SimpleDateFormat("yyyyMMdd_HH:mm:ss", Locale.getDefault()).format(Date())
             val file = File(BaseApplication.FILE_PATH_NAME + "DebugLog_$strDate.txt")
             val buf = BufferedWriter(OutputStreamWriter(FileOutputStream(file, true), "UTF-8"))
 
@@ -103,9 +103,7 @@ object LogUtil {
                         buf.append(token.substring(i, i + 3600) + "\n")
                         i++
                     }
-                    buf.append(
-                        token.substring(i) + "\n"
-                    )
+                    buf.append(token.substring(i))
                 }
             }
             buf.close()

@@ -20,8 +20,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SmombieApp">
-        <activity android:name=".view.LogActivity"></activity>
-
         <receiver
             android:name=".brodcast.SmombieReceiver"
             android:enabled="true"
@@ -53,6 +51,16 @@
             android:enabled="true"
             android:exported="false" />
 
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.smombieapp"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
         <activity android:name=".view.intro.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -62,7 +70,8 @@
         </activity>
         <activity android:name=".view.MainActivity" />
         <activity android:name=".view.intro.PermissionActivity" />
-        <activity android:name=".view.LockScreenActivity" />
+        <activity android:name=".view.LogActivity" />
+
     </application>
 
 </manifest>

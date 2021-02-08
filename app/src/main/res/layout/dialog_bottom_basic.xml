@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dimen_200dp"
+    android:background="@drawable/rectangle_r4_ffffff"
+    android:orientation="vertical"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <TextView
+            android:id="@+id/dialog_tv_title"
+            style="@style/Font_18_000000"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_60dp"
+            android:gravity="center"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="알림" />
+
+        <ImageButton
+            android:id="@+id/dialog_btnClose"
+            android:layout_width="@dimen/dimen_36dp"
+            android:layout_height="@dimen/dimen_36dp"
+            android:layout_marginEnd="@dimen/dimen_12dp"
+            android:background="@color/color_666666"
+            app:layout_constraintBottom_toBottomOf="@id/dialog_tv_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/dialog_tv_title" />
+
+        <TextView
+            android:id="@+id/dialog_tvContent"
+            style="@style/Font_16_000000"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="@dimen/dimen_50dp"
+            android:gravity="center"
+            android:paddingStart="@dimen/dimen_30dp"
+            android:paddingTop="@dimen/dimen_40dp"
+            android:paddingEnd="@dimen/dimen_30dp"
+            android:paddingBottom="@dimen/dimen_10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="메시지메시지메시지메시징루루루루루루루ㅜ루루루ㅜ룰라라\n라라라라라ㅏ라로로로로로로" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/dialog_btnNo"
+            style="@style/Font_16_000000"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dimen_50dp"
+            android:background="@color/color_DEDEDE"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/dialog_btnYes"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="@string/btn_cancel" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/dialog_btnYes"
+            style="@style/Font_16_FFFFFF"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dimen_50dp"
+            android:background="@color/purple_500"
+            android:backgroundTint="@null"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/dialog_btnNo"
+            tools:text="@string/btn_confirm" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

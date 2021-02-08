@@ -8,6 +8,14 @@
     android:background="@color/color_242424"
     android:padding="@dimen/dimen_50dp">
 
+    <Button
+        android:background="@color/purple_500"
+        android:id="@+id/lock_screen_btn_emergency"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        style="@style/Font_16_FFFFFF"
+        android:text="@string/btn_emergency"/>
 
     <TextView
         style="@style/Font_20_FFFFFF"
@@ -55,6 +63,7 @@
         android:background="@color/purple_500"
         android:id="@+id/lock_screen_btn_exit"
         style="@style/Font_16_FFFFFF"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimen_50dp"
         android:text="@string/btn_exit" />
@@ -66,13 +75,6 @@
         android:layout_weight="1"/>
 
 
-    <Button
-        android:background="@color/purple_500"
-        android:id="@+id/lock_screen_btn_call"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        style="@style/Font_16_FFFFFF"
-        android:text="@string/btn_call"/>
+
 
 </LinearLayout>

@@ -13,7 +13,7 @@ open class BaseActivity:AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
         super.onCreate(savedInstanceState, persistentState)
-        Thread.setDefaultUncaughtExceptionHandler(exxx())
+        Thread.setDefaultUncaughtExceptionHandler(UncaughtException())
     }
     /**
      * 앱 종료
@@ -25,7 +25,7 @@ open class BaseActivity:AppCompatActivity() {
         }, 200)
     }
 
-    inner class exxx :Thread.UncaughtExceptionHandler{
+    inner class UncaughtException :Thread.UncaughtExceptionHandler{
         override fun uncaughtException(t: Thread, e: Throwable) {
             LogUtil.e(this@BaseActivity,e)
         }
