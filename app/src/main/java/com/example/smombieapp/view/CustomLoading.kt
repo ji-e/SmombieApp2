@@ -30,7 +30,7 @@ class CustomLoading{
                         mLoadingBar?.dismiss()
                         mLoadingBar = null
                     } catch (e: Exception) {
-                        e.printStackTrace()
+                        LogUtil.e(e)
                     }
                 }
             }

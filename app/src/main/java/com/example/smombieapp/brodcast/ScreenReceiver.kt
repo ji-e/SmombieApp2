@@ -4,10 +4,17 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import com.example.smombieapp.service.StepCallback
 import com.example.smombieapp.utils.LogUtil
 
 
 class ScreenReceiver : BroadcastReceiver() {
+    private var callback: ScreenCallback? = null
+    fun setCallback(callback: ScreenCallback) {
+        this.callback = callback
+    }
+
+
     var isScreenON = true
     override fun onReceive(context: Context?, intent: Intent?) {
         val action = intent!!.action
@@ -15,9 +22,11 @@ class ScreenReceiver : BroadcastReceiver() {
 
         when (action) {
             Intent.ACTION_SCREEN_ON -> {
+                callback?.onScreenON(true)
                 isScreenON = true
             }
             Intent.ACTION_SCREEN_OFF -> {
+                callback?.onScreenON(false)
                 isScreenON = false
             }
         }

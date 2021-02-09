@@ -50,4 +50,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/main_btn_log" />
 
+    <EditText
+        android:id="@+id/main_et_email"
+        style="@style/Font_14_000000"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/main_email_hint"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/main_btn_bug" />
+
+    <Button
+        android:id="@+id/main_btn_email"
+        style="@style/Font_14_FFFFFF"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="@string/btn_email"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/main_et_email" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

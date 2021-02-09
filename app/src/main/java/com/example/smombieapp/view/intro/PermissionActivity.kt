@@ -35,14 +35,15 @@ class PermissionActivity : BaseActivity() {
         permissionCheck()
 
     }
+
     private fun initView() {
         binding.permissionBtnConfirm.setOnClickListener { setPermission() }
     }
 
     override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
+            requestCode: Int,
+            permissions: Array<out String>,
+            grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == Constants.CHECK_PERMISSION) {
@@ -72,9 +73,9 @@ class PermissionActivity : BaseActivity() {
         if (!Settings.canDrawOverlays(this)) {
             // 다른앱 위에 그리기 체크
             setOverlayPermission()
-        } else  if (!pm.isIgnoringBatteryOptimizations(packageName)) {
+        } else if (!pm.isIgnoringBatteryOptimizations(packageName)) {
             setIgnoreBattery()
-        }else {
+        } else {
             startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
@@ -115,7 +116,7 @@ class PermissionActivity : BaseActivity() {
 
         val pm = getSystemService(Context.POWER_SERVICE) as PowerManager
         if (!Settings.canDrawOverlays(this) || !pm.isIgnoringBatteryOptimizations(packageName)) {
-          return
+            return
         }
 
         if (permissionList.isEmpty()) {
@@ -125,8 +126,7 @@ class PermissionActivity : BaseActivity() {
 
     /** 권한설정 */
     private fun setPermission() {
-        if(permissionList.isNotEmpty()) {
-
+        if (permissionList.isNotEmpty()) {
             val permissionArr = arrayOfNulls<String>(permissionList.size)
             for (i in 0 until permissionList.size) {
                 permissionArr[i] = permissionList[i]
@@ -137,12 +137,9 @@ class PermissionActivity : BaseActivity() {
                     permissionArr,
                     Constants.CHECK_PERMISSION
             )
-        }else {
+        } else {
             permissionOnSuccess()
         }
-//        if (!Settings.canDrawOverlays(this)) {
-//            setOverlayPermission()
-//        }
     }
 
     private fun setOverlayPermission() {
@@ -152,17 +149,12 @@ class PermissionActivity : BaseActivity() {
     }
 
     private fun setIgnoreBattery() {
-        val intent = Intent()
-
         val packageName = packageName
-        val pm = getSystemService(Context.POWER_SERVICE) as PowerManager
+        val intent = Intent().apply {
+            action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+            data = Uri.parse("package:$packageName")
+        }
 
-//        if (pm.isIgnoringBatteryOptimizations(packageName)) {
-////            intent.action = Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS
-//        } else {
-            intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
-            intent.data = Uri.parse("package:$packageName")
-//        }
         startActivityForResult(intent, Constants.CHECK_IGNORE_BATTERY_OPTIMIZATION)
     }
 }

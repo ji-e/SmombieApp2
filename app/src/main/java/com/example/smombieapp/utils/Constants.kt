@@ -7,8 +7,9 @@ object Constants {
     const val NOTIFICATION_ID = 1
 
 
-    const val STEP_SERVICE_START = "STEP_SERVICE_START"
-    const val STEP_SERVICE_END = "STEP_SERVICE_END"
+    const val STEP_SERVICE_TIME = "STEP_SERVICE_TIME"
+    const val STEP_SERVICE_DATE = "STEP_SERVICE_DATE"
+    const val STEP_SERVICE_STEP = "STEP_SERVICE_STEP"
     const val IS_STEP_SERVICE = "IS_STEP_SERVICE"
 
     const val CHANNEL_ID = "smombie"

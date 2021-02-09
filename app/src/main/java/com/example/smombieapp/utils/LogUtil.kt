@@ -37,7 +37,7 @@ object LogUtil {
     }
 
     private fun doLog(logLevel: Int, vararg logText: Any?) {
-        if (!isLog) return
+
 
         val stb = StringBuilder()
         for (i in logText.indices) {
@@ -68,8 +68,9 @@ object LogUtil {
                 stb.toString()
             )
         }
-
-        Log.println(logLevel, "FITCA", log)
+        if (isLog) {
+            Log.println(logLevel, "FITCA", log)
+        }
 
         if(logLevel == Log.ERROR)
             flog(log)
@@ -80,7 +81,7 @@ object LogUtil {
      * @log:String
      */
     private fun flog(log: String) {
-        if (!isFLog) return
+//        if (!isFLog) return
         try {
             val dir = File(BaseApplication.DIR)
             if (!dir.isDirectory && !dir.exists()) dir.mkdirs()
@@ -107,9 +108,7 @@ object LogUtil {
                 }
             }
             buf.close()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
+        } catch (e: IOException) { }
     }
 
 }

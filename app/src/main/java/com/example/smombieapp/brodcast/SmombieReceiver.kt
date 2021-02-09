@@ -41,9 +41,7 @@ class SmombieReceiver : BroadcastReceiver() {
 
     private fun smombieServiceStart(mContext: Context) {
         if (BaseApplication.useSharedPreference.getPreferencesData(Constants.IS_STEP_SERVICE) == "Y") {
-            val i = Intent(mContext, StepService::class.java).apply {
-                action = Constants.STEP_SERVICE_START
-            }
+            val i = Intent(mContext, StepService::class.java)
             mContext.startService(i)
         }
     }

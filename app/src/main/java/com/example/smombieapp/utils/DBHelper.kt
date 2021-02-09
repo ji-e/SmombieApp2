@@ -19,13 +19,13 @@ class DBHelper(mContext: Context) : SQLiteOpenHelper(mContext, "smombie", null, 
      * startTime: HHmmss
      * endTime: HHmmss
      * totalTime: HHmmss
-     * StepCnt: 걸음 수
+     * stepCnt: 걸음 수
      */
     val tableName = "tb_smombie"
 
 
     override fun onCreate(db: SQLiteDatabase) {
-        val queryCreate = "create table $tableName (idx integer primary key autoincrement, date , startTime, endTime, totalTime, StepCnt)"
+        val queryCreate = "create table $tableName (idx integer primary key autoincrement, date , startTime, endTime, totalTime, stepCnt)"
         db.execSQL(queryCreate)
     }
 
@@ -42,15 +42,16 @@ class DBHelper(mContext: Context) : SQLiteOpenHelper(mContext, "smombie", null, 
         val db = writableDatabase
         val queryDrop = "drop table $tableName"
         db.execSQL(queryDrop)
-        val queryCreate = "create table $tableName (idx integer primary key autoincrement, date , startTime, endTime, totalTime, StepCnt)"
+        val queryCreate = "create table $tableName (idx integer primary key autoincrement, date , startTime, endTime, totalTime, stepCnt)"
         db.execSQL(queryCreate)
         db.close()
+        LogUtil.d(queryDrop, queryCreate)
     }
 
     /**
      * tb_smombie 데이터 삽입
      */
-    fun insert(date: String, startTime: String, endTime: String, totalTime: String, StepCnt: String) {
+    fun insert(date: String, startTime: String, endTime: String, totalTime: String, stepCnt: String) {
         val db = writableDatabase
         val values = ContentValues().apply {
             put("date", date)
@@ -58,23 +59,44 @@ class DBHelper(mContext: Context) : SQLiteOpenHelper(mContext, "smombie", null, 
             put("endTime", endTime)
             put("startTime", startTime)
             put("totalTime", totalTime)
-            put("StepCnt", StepCnt)
+            put("stepCnt", stepCnt)
         }
 
         db?.insert(tableName, null, values)
-//        val queryInsert = "insert into $tableName (date, startTime, endTime, totalTime, StepCnt) values (?,?,?,?,?), ($date, \'$startTime\', \'$endTime\', '$totalTime', '$StepCnt')"
+//        val queryInsert = "insert into $tableName (date, startTime, endTime, totalTime, stepCnt) values (?,?,?,?,?), ($date, \'$startTime\', \'$endTime\', '$totalTime', '$StepCnt')"
 //        db.execSQL(queryInsert)
         db.close()
 //        LogUtil.d(queryInsert)
     }
 
     /**
+     * tb_smombie 데이터 삽입
+     */
+    fun insertOrReplace(date: String, startTime: String, endTime: String, totalTime: String, stepCnt: String) {
+        val db = writableDatabase
+        val values = ContentValues().apply {
+            put("date", date)
+            put("startTime", startTime)
+            put("endTime", endTime)
+            put("startTime", startTime)
+            put("totalTime", totalTime)
+            put("stepCnt", stepCnt)
+        }
+
+//        db?.insert(tableName, null, values)
+        val queryInsert = "insert into $tableName (date, startTime, endTime, totalTime, stepCnt) values (?,?,?,?,?), ($date, \'$startTime\', \'$endTime\', '$totalTime', '$stepCnt')"
+        db.execSQL(queryInsert)
+        db.close()
+        LogUtil.d(queryInsert)
+    }
+
+    /**
      * tb_smombie 데이터 수정
      */
-    fun update(date:String, startTime: String, endTime: String, totalTime: String, StepCnt: String) {
+    fun update(date:String, startTime: String, endTime: String, totalTime: String, stepCnt: String) {
         val db = writableDatabase
         val queryUpdate = "update $tableName " +
-                "set endTime =\'$endTime\', totalTime=\'$totalTime\', StepCnt='$StepCnt' " +
+                "set endTime =\'$endTime\', totalTime=\'$totalTime\', stepCnt='$stepCnt' " +
                 "where startTime=\'$startTime\' AND date='$date'"
         db.execSQL(queryUpdate)
 //        db.close()
@@ -83,13 +105,25 @@ class DBHelper(mContext: Context) : SQLiteOpenHelper(mContext, "smombie", null, 
         val values = ContentValues().apply {
             put("endTime", endTime)
             put("totalTime", totalTime)
-            put("StepCnt", StepCnt)
+            put("stepCnt", stepCnt)
         }
 //        db.update(
 //                tableName,
 //                values,
 //                "date=$date AND startTime=$startTime",
 //                null)
+        db.close()
+    }
+
+    /**
+     * tb_smombie 데이터 삭제
+     */
+    fun delete(startTime: String) {
+        val db = writableDatabase
+        val queryDelete = "delete from $tableName where startTime=\'$startTime\'"
+        db.execSQL(queryDelete)
+        LogUtil.d(queryDelete)
+
         db.close()
     }
 

@@ -11,10 +11,13 @@
     <string name="btn_emergency">1분 긴급 해제</string>
     <string name="btn_log">로그</string>
     <string name="btn_bug">버그 제보</string>
-
+    <string name="btn_reset">초기화</string>
+    <string name="btn_email">이메일로 내보내기</string>
 
     <string name="dialog_title">알림</string>
-    <string name="dialog_content">서비스를 종료하시겠습니까?</string>
+    <string name="dialog_end_service_content">서비스를 종료하시겠습니까?</string>
+    <string name="dialog_reset_content">초기화 하시겠습니까?</string>
+    <string name="dialog_permission_content">권한 설정 필수</string>
 
     <string name="permission_title">권한 설정</string>
 
@@ -22,8 +25,7 @@
     <string name="main_service_state">서비스 상태: </string>
     <string name="main_service_on">서비스 실행</string>
     <string name="main_step_cnt">걸음 수:  </string>
-    <string name="main_location">위치:  </string>
-    <string name="main_gps_stage">GPS 상태:  </string>
+    <string name="main_email_hint">받을 이메일 주소</string>
 
     <string name="lock_screen_view_title">스몸비 방지 실행 중</string>
     <string name="lock_screen_view_step_cnt">걸음 수 </string>
