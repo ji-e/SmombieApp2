@@ -8,6 +8,7 @@ import com.example.smombieapp.utils.LogUtil
 
 class LogActivity : BaseActivity() {
     private lateinit var binding: ActivityLogBinding
+    private var cursor: Cursor? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,21 +21,24 @@ class LogActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        setLogView(getLogCursor())
+
+        cursor = getLogCursor()
+        setLogView()
     }
 
-    private fun setLogView(cursor:Cursor) {
+    private fun setLogView() {
         val sb = StringBuffer()
-        while (cursor.moveToNext()) {
+        while (cursor?.moveToNext() == true) {
             sb.append(
 //                    "${cursor.getInt(0)}\n" +
 //                    "${cursor.getString(1)} // " +
-                    "${cursor.getString(2)} // " +
-                    "${cursor.getString(3)} // " +
-                    "${cursor.getString(4)} // " +
-                    "${cursor.getString(5)}\n\n")
+                    "${cursor?.getString(2)} // " +
+                            "${cursor?.getString(3)} // " +
+                            "${cursor?.getString(4)} // " +
+                            "${cursor?.getString(5)}\n\n")
 
         }
+
         binding.logTv.text = sb.toString()
     }
 

@@ -58,17 +58,6 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="@string/lock_screen_view_msg" />
 
-
-    <Button
-        android:background="@color/purple_500"
-        android:id="@+id/lock_screen_btn_exit"
-        style="@style/Font_16_FFFFFF"
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_50dp"
-        android:text="@string/btn_exit" />
-
-
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="0dp"

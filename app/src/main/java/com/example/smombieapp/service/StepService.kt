@@ -34,6 +34,7 @@ import com.example.smombieapp.view.MainActivity
 class StepService : Service(), SensorEventListener {
     companion object {
         var isService = false
+        var isReceiver = false
         var startServiceDate = ""
         var startServiceTime = ""
         var endServiceTime = ""
@@ -72,7 +73,8 @@ class StepService : Service(), SensorEventListener {
         }
 
         override fun onFinish() {
-            hideLockScreen(false)
+            hideLockScreen()
+            isLock = false
         }
     }
 
@@ -87,6 +89,7 @@ class StepService : Service(), SensorEventListener {
     }
 
     override fun onBind(intent: Intent): IBinder? {
+        LogUtil.e("onBind_StepService")
         return mStepBinder
     }
 
@@ -104,10 +107,9 @@ class StepService : Service(), SensorEventListener {
         stepDetectorSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR)
         stepCountSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
         if (stepDetectorSensor != null || stepCountSensor != null) {
-
             onStartFore()
         } else {
-            onStopFore()
+//            onStopFore()
         }
 //        } else {
 //            onStopFore()
@@ -146,7 +148,7 @@ class StepService : Service(), SensorEventListener {
 
     /** 스몸비 시작 */
     private fun onStartFore() {
-        if (sp.getPreferencesData(Constants.IS_STEP_SERVICE) != "" && sp.getPreferencesData(Constants.IS_STEP_SERVICE) == "Y") {
+        if (sp.getPreferencesData(Constants.IS_STEP_SERVICE) == "Y") {
             startServiceDate = sp.getPreferencesData(Constants.STEP_SERVICE_DATE)
             startServiceTime = sp.getPreferencesData(Constants.STEP_SERVICE_TIME)
             smombieStep = sp.getPreferencesData(Constants.STEP_SERVICE_STEP).toFloat()
@@ -208,17 +210,21 @@ class StepService : Service(), SensorEventListener {
         registerReceiver(smombieReceiver, smombieIntentFilter)
         registerReceiver(screenReceiver, screenIntentFilter)
         screenReceiver.setCallback(screenCallback)
+        isReceiver = true
     }
 
     /** 스크린 리시버 해제 */
     private fun screenUnregisterReceiver() {
+        if (!isReceiver) return
         try {
             unregisterReceiver(screenReceiver)
             unregisterReceiver(smombieReceiver)
+            isReceiver = false
         } catch (e: IllegalArgumentException) {
-            e.printStackTrace()
+            isReceiver = false
             LogUtil.e(e)
         } catch (e: Exception) {
+            isReceiver = false
             LogUtil.e(e)
         }
     }
@@ -274,6 +280,7 @@ class StepService : Service(), SensorEventListener {
         try {
             if (!Settings.canDrawOverlays(this)) return
 
+            isLock = true
             val type =
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
@@ -289,31 +296,25 @@ class StepService : Service(), SensorEventListener {
                             or WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
                     PixelFormat.TRANSLUCENT
             )
-            params.horizontalMargin = 10f
-            params.verticalMargin = 10f
+//            params.horizontalMargin = 10f
+//            params.verticalMargin = 10f
             val inflate = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
             wm = getSystemService(Context.WINDOW_SERVICE) as WindowManager
             mView = inflate.inflate(R.layout.lock_screen_view, null, false)
 
-            val lockScreenBtnExit = mView!!.findViewById<Button>(R.id.lock_screen_btn_exit)
-            lockScreenBtnExit.setOnClickListener {
-                onDestroy()
-                hideLockScreen(false)
+            if (wm != null && mView != null) {
+                val lockScreenBtnCall = mView!!.findViewById<Button>(R.id.lock_screen_btn_emergency)
+                lockScreenBtnCall.setOnClickListener {
+                    // 1분동안 잠금화면 풀기
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        isLock = false
+                    }, 1000 * 60)
+
+                }
+
+                wm?.addView(mView, params)
             }
-
-            val lockScreenBtnCall = mView!!.findViewById<Button>(R.id.lock_screen_btn_emergency)
-            lockScreenBtnCall.setOnClickListener {
-
-                // 1분동안 잠금화면 풀기
-                hideLockScreen(true)
-                Handler(Looper.getMainLooper()).postDelayed({
-                    isLock = false
-                }, 1000 * 60)
-
-            }
-
-            wm?.addView(mView, params)
         } catch (e: Exception) {
             LogUtil.e(e)
         }
@@ -321,18 +322,11 @@ class StepService : Service(), SensorEventListener {
     }
 
     /** 잠금화면 해제 */
-    private fun hideLockScreen(isLock: Boolean) {
+    private fun hideLockScreen() {
         countDownTimer.cancel()
         wm?.removeView(mView)
         mView = null
         wm = null
-        this.isLock = isLock
-    }
-
-    /** 잠금화면 걸음 수 카운트*/
-    private fun lockScreenChangeStepCount(cnt: String) {
-        val lockScreenStepCnt = mView!!.findViewById<TextView>(R.id.lock_screen_step_cnt)
-        lockScreenStepCnt.text = cnt
     }
 
     /** 걸음수 변화 체크*/
@@ -340,13 +334,13 @@ class StepService : Service(), SensorEventListener {
         countDownTimer.cancel()
         countDownTimer.start()
 
-        if (mView != null) {
-            lockScreenChangeStepCount("${smombieStep.toInt()}")
+        if (isScreenOn && !isLock) {
+            showLockScreen()
         }
 
-        if (isScreenOn && !isLock) {
-            isLock = true
-            showLockScreen()
+        if (mView != null) {
+            val lockScreenStepCnt = mView!!.findViewById<TextView>(R.id.lock_screen_step_cnt)
+            lockScreenStepCnt.text = "${smombieStep.toInt()}"
         }
     }
 
@@ -375,7 +369,6 @@ class StepService : Service(), SensorEventListener {
         endUpdate()
         reset()
         callback?.onEndService()
-
         LogUtil.e("!!onDestroy_StepService!!")
     }
 
@@ -386,7 +379,7 @@ class StepService : Service(), SensorEventListener {
 
     inner class UncaughtException : Thread.UncaughtExceptionHandler {
         override fun uncaughtException(t: Thread, e: Throwable) {
-            LogUtil.e(e)
+            LogUtil.e(t, e)
             onDestroy()
         }
     }

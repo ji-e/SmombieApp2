@@ -61,6 +61,12 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
             LogUtil.e("SERVICE_CONNECTED")
+
+            if(!StepService.isService){
+                binding.mainSwService.isChecked = false
+                setServiceState("END")
+                return
+            }
             val sb = service as StepService.StepBinder
             stepService = sb.service
             stepService?.setCallback(stepCallback)
@@ -88,6 +94,11 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         if (StepService.isService) {
             binding.mainSwService.isChecked = true
             binding.mainTvStartTime.text = StepService.startServiceTime
+        }else {
+            if(BaseApplication.useSharedPreference.getPreferencesData(Constants.IS_STEP_SERVICE) == "Y"){
+                binding.mainSwService.isChecked = true
+                binding.mainTvStartTime.text = StepService.startServiceTime
+            }
         }
     }
 
@@ -151,15 +162,13 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                     arrayOf(
                             Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.READ_PHONE_STATE
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
                     )
                 } else {
                     arrayOf(
                             Manifest.permission.ACTIVITY_RECOGNITION,
                             Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.READ_PHONE_STATE
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
                     )
                 }
 
@@ -200,6 +209,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                 if (calDateDays > 1) {
                     db.onReset()
                 }
+                db.insert(StepService.startServiceDate, StepService.startServiceTime, "", "", "0")
             }
 
         } catch (e: ParseException) {

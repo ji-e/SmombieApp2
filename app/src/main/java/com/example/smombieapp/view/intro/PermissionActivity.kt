@@ -93,15 +93,15 @@ class PermissionActivity : BaseActivity() {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                     arrayOf(
                             Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.READ_PHONE_STATE
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+//                            Manifest.permission.READ_PHONE_STATE
                     )
                 } else {
                     arrayOf(
                             Manifest.permission.ACTIVITY_RECOGNITION,
                             Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.READ_PHONE_STATE
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+//                            Manifest.permission.READ_PHONE_STATE
                     )
                 }
 

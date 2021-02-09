@@ -40,6 +40,9 @@ class BaseApplication : Application() {
     /** 실행 시간 구하기 */
     fun getTime(): String {
         try {
+            if(StepService.startServiceDate.isEmpty() || StepService.endServiceTime.isEmpty()) {
+                return ""
+            }
             val format = SimpleDateFormat("yyyyMMdd HH:mm:ss")
             val dateStart = format.parse(StepService.startServiceTime)
             val dateEnd = format.parse(StepService.endServiceTime)
