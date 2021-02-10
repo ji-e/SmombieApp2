@@ -8,6 +8,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.PixelFormat
+import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.shapes.OvalShape
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -18,6 +20,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.app.NotificationCompat
 import com.example.smombieapp.R
@@ -237,13 +240,14 @@ class StepService : Service(), SensorEventListener {
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
         val notificationBuilder =
                 NotificationCompat.Builder(applicationContext, Constants.CHANNEL_ID)
-                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setSmallIcon(R.drawable.logo)
                         .setContentText(getString(R.string.notification_body))
                         .setAutoCancel(false)
                         .setContentIntent(pendingIntent)
                         .setShowWhen(false)
 
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         // android Oreo 알림 채널이 필요
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -304,14 +308,18 @@ class StepService : Service(), SensorEventListener {
             mView = inflate.inflate(R.layout.lock_screen_view, null, false)
 
             if (wm != null && mView != null) {
-                val lockScreenBtnCall = mView!!.findViewById<Button>(R.id.lock_screen_btn_emergency)
+                val lockScreenBtnCall = mView!!.findViewById<TextView>(R.id.lock_screen_btn_emergency)
                 lockScreenBtnCall.setOnClickListener {
                     // 1분동안 잠금화면 풀기
+                    hideLockScreen()
                     Handler(Looper.getMainLooper()).postDelayed({
                         isLock = false
                     }, 1000 * 60)
 
                 }
+                val logo = mView!!.findViewById<ImageView>(R.id.lock_img_logo)
+                logo.background = ShapeDrawable(OvalShape())
+                logo.clipToOutline = true
 
                 wm?.addView(mView, params)
             }
@@ -324,7 +332,10 @@ class StepService : Service(), SensorEventListener {
     /** 잠금화면 해제 */
     private fun hideLockScreen() {
         countDownTimer.cancel()
-        wm?.removeView(mView)
+        if (wm != null && mView != null) {
+            wm?.removeView(mView)
+        }
+
         mView = null
         wm = null
     }
@@ -351,7 +362,8 @@ class StepService : Service(), SensorEventListener {
                 startServiceTime,
                 endServiceTime,
                 BaseApplication().getTime(),
-                smombieStep.toInt().toString())
+                smombieStep.toInt().toString()
+        )
     }
 
     /** 시작시간 DB Insert */

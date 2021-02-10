@@ -4,25 +4,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/color_242424"
-    android:padding="@dimen/dimen_50dp">
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="@dimen/dimen_20dp">
 
-    <Button
-        android:background="@color/purple_500"
-        android:id="@+id/lock_screen_btn_emergency"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        style="@style/Font_16_FFFFFF"
-        android:text="@string/btn_emergency"/>
+    <ImageView
+        android:id="@+id/lock_img_logo"
+        android:layout_width="@dimen/dimen_40dp"
+        android:layout_height="@dimen/dimen_40dp"
+        android:layout_marginTop="@dimen/dimen_20dp"
+        android:src="@drawable/smombie_logo" />
+
 
     <TextView
         style="@style/Font_20_FFFFFF"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:layout_marginTop="@dimen/dimen_40dp"
+        android:gravity="center"
         android:text="@string/lock_screen_view_title"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -58,12 +58,23 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="@string/lock_screen_view_msg" />
 
+
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1" />
 
 
+    <TextView
+        android:id="@+id/lock_screen_btn_emergency"
+        style="@style/Font_16_FFFFFF"
+        android:layout_width="@dimen/dimen_80dp"
+        android:layout_height="@dimen/dimen_80dp"
+        android:background="@drawable/circle"
+        android:gravity="center"
+        android:layout_marginBottom="@dimen/dimen_20dp"
+        android:text="@string/btn_emergency"
+        android:textStyle="bold" />
 
 
 </LinearLayout>

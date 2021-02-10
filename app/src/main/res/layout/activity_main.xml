@@ -4,69 +4,132 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/color_EDEDED"
     android:orientation="vertical"
-    android:padding="@dimen/dimen_16dp"
     tools:context=".view.MainActivity">
 
-    <TextView
-        android:id="@+id/main_tv_start_time"
-        style="@style/Font_16_000000"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/main_start_time"
-        app:layout_constraintStart_toStartOf="parent"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_200dp"
+        android:background="@color/color_primary2"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/dimen_30dp"
         app:layout_constraintTop_toTopOf="parent" />
 
 
-    <Switch
-        android:id="@+id/main_sw_service"
-        style="@style/Font_16_000000"
+    <ImageView
+        android:id="@+id/main_img_setting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:showText="true"
-        android:switchTextAppearance="@style/Font_16_000000"
-        android:text="@string/main_service_on"
-        android:textOff="@string/btn_end"
-        android:textOn="@string/btn_start"
+        android:layout_marginTop="@dimen/dimen_12dp"
+        android:layout_marginEnd="@dimen/dimen_16dp"
+        android:src="@drawable/btn_top_setting"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <LinearLayout
+        android:id="@+id/main_lay_service"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_250dp"
+        android:layout_marginStart="@dimen/dimen_20dp"
+        android:layout_marginTop="@dimen/dimen_50dp"
+        android:layout_marginEnd="@dimen/dimen_20dp"
+        android:background="@drawable/rectangle_r4_ffffff"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/main_tv_start_time" />
+        app:layout_constraintTop_toBottomOf="@id/main_img_setting">
 
+        <TextView
+            android:id="@+id/main_txt_start_time"
+            style="@style/Font_16_3D3D3D"
+            android:layout_marginTop="@dimen/dimen_20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/main_start_time"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/main_img_setting" />
 
-    <Button
-        android:id="@+id/main_btn_log"
-        style="@style/Font_14_FFFFFF"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/btn_log"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/main_sw_service" />
+        <TextView
+            android:id="@+id/main_tv_start_time"
+            style="@style/Font_30_3D3D3D"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_20dp"
+            android:layout_marginBottom="@dimen/dimen_40dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:textAlignment="center"
+            android:text="@string/main_start_msg" />
 
-    <Button
-        android:id="@+id/main_btn_bug"
-        style="@style/Font_14_FFFFFF"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/btn_bug"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/main_btn_log" />
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/main_sw_service"
+            style="@style/Font_16_000000"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:showText="true"
+            android:switchTextAppearance="@style/Font_16_000000"
+            android:text="@string/main_service_on"
+            android:textOff="@string/btn_end"
+            android:textOn="@string/btn_start" />
+    </LinearLayout>
 
-    <EditText
-        android:id="@+id/main_et_email"
-        style="@style/Font_14_000000"
+    <ImageView
+        android:id="@+id/main_img_logo"
+        android:layout_width="@dimen/dimen_40dp"
+        android:layout_height="@dimen/dimen_40dp"
+        android:src="@drawable/smombie_logo"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/dimen_75dp"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_150dp"
+        android:orientation="horizontal"
+        android:padding="@dimen/dimen_20dp"
+        app:layout_constraintTop_toBottomOf="@id/main_lay_service">
+
+        <Button
+            android:id="@+id/main_btn_log"
+            style="@style/Font_14_FFFFFF"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/dimen_10dp"
+            android:layout_weight="1"
+            android:text="@string/btn_log" />
+
+        <Button
+            android:id="@+id/main_btn_email"
+            style="@style/Font_14_FFFFFF"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/dimen_10dp"
+            android:layout_weight="1"
+            android:text="@string/btn_email" />
+
+        <Button
+            android:id="@+id/main_btn_bug"
+            style="@style/Font_14_FFFFFF"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/btn_bug" />
+    </LinearLayout>
+
+    <TextView
+        style="@style/Font_10_666666"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/main_email_hint"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/main_btn_bug" />
+        android:layout_marginBottom="@dimen/dimen_20dp"
+        android:text="@string/app_name"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
-    <Button
-        android:id="@+id/main_btn_email"
-        style="@style/Font_14_FFFFFF"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:enabled="false"
-        android:text="@string/btn_email"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/main_et_email" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

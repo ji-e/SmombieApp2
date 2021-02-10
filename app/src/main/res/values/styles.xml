@@ -1,5 +1,12 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
+
+    <style name="Font_10_666666">
+        <item name="android:textColor">@color/color_666666</item>
+        <item name="android:textSize">@dimen/dimen_10dp</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
     <style name="Font_12_666666">
         <item name="android:textColor">@color/color_666666</item>
         <item name="android:textSize">@dimen/dimen_12dp</item>
@@ -38,6 +45,14 @@
         <item name="android:includeFontPadding">false</item>
     </style>
 
+    <style name="Font_14_3CB5F8">
+        <item name="android:textColor">@color/color_primary</item>
+        <item name="android:textSize">@dimen/dimen_14dp</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+
+
     <style name="Font_14_8D8D8D">
         <item name="android:textColor">@color/color_8D8D8D</item>
         <item name="android:textSize">@dimen/dimen_14dp</item>
@@ -58,6 +73,12 @@
 
     <style name="Font_14_242424">
         <item name="android:textColor">@color/color_242424</item>
+        <item name="android:textSize">@dimen/dimen_14dp</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Font_14_3D3D3D">
+        <item name="android:textColor">@color/color_3D3D3D</item>
         <item name="android:textSize">@dimen/dimen_14dp</item>
         <item name="android:includeFontPadding">false</item>
     </style>
@@ -110,6 +131,8 @@
         <item name="android:includeFontPadding">false</item>
     </style>
 
+
+
     <style name="Font_20_FFFFFF">
         <item name="android:textColor">@color/color_FFFFFF</item>
         <item name="android:textSize">@dimen/dimen_20dp</item>
@@ -139,6 +162,13 @@
         <item name="android:textSize">@dimen/dimen_22dp</item>
         <item name="android:includeFontPadding">false</item>
     </style>
+
+    <style name="Font_30_3D3D3D">
+        <item name="android:textColor">@color/color_3D3D3D</item>
+        <item name="android:textSize">@dimen/dimen_30dp</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
 
     <style name="Font_74_000000">
         <item name="android:textColor">@color/color_000000</item>

@@ -18,5 +18,9 @@ object Constants {
     const val EXCEL_FILE_NAME = "smombieApp_log"
 
     const val BUG_EMAIL="uohihi@gmail.com"
+    const val PRIVACY_URL = "http://smombie.pickstudio.io/privacy"
+
+    const val IS_PRIVACY = "IS_PRIVACY"
+    const val EXCEL_EMAIL = "EXCEL_EMAIL"
 
 }

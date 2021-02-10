@@ -9,12 +9,13 @@ import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
+import android.webkit.WebSettings
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.smombieapp.base.BaseActivity
+import com.example.smombieapp.base.BaseApplication
 import com.example.smombieapp.databinding.ActivityPermissionBinding
 import com.example.smombieapp.utils.Constants
-import com.example.smombieapp.utils.LogUtil
 import com.example.smombieapp.view.MainActivity
 
 
@@ -38,6 +39,7 @@ class PermissionActivity : BaseActivity() {
 
     private fun initView() {
         binding.permissionBtnConfirm.setOnClickListener { setPermission() }
+        binding.permissionBtnClose.setOnClickListener { exitApp() }
     }
 
     override fun onRequestPermissionsResult(
@@ -76,7 +78,11 @@ class PermissionActivity : BaseActivity() {
         } else if (!pm.isIgnoringBatteryOptimizations(packageName)) {
             setIgnoreBattery()
         } else {
-            startActivity(Intent(this, MainActivity::class.java))
+            if(BaseApplication.useSharedPreference.getPreferencesData(Constants.IS_PRIVACY) != "Y"){
+                startActivity(Intent(this, PrivacyActivity::class.java))
+            }else {
+                startActivity(Intent(this, MainActivity::class.java))
+            }
             finish()
         }
     }

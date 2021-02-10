@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SmombieApp</string>
+    <string name="app_name">Smombie</string>
     <string name="exit_msg">한 번 더 뒤로가기 누를 시 종료됩니다.</string>
     <string name="notification_body">스몸비 방지 실행 중</string>
 
@@ -8,26 +8,51 @@
     <string name="btn_start">ON</string>
     <string name="btn_end">OFF</string>
     <string name="btn_exit">서비스 종료</string>
-    <string name="btn_emergency">1분 긴급 해제</string>
-    <string name="btn_log">로그</string>
+    <string name="btn_emergency">1분\n긴급 해제</string>
+    <string name="btn_log">스몸비 로그</string>
     <string name="btn_bug">버그 제보</string>
     <string name="btn_reset">초기화</string>
     <string name="btn_email">이메일로 내보내기</string>
+    <string name="btn_agree">동의</string>
 
     <string name="dialog_title">알림</string>
     <string name="dialog_end_service_content">서비스를 종료하시겠습니까?</string>
     <string name="dialog_reset_content">초기화 하시겠습니까?</string>
     <string name="dialog_permission_content">권한 설정 필수</string>
+    <string name="dialog_email_content">이메일이 등록되었습니다.</string>
+    <string name="dialog_email_content2">등록된 이메일이 없습니다.</string>
 
-    <string name="permission_title">권한 설정</string>
+    <string name="permission_title">권한 확인</string>
+    <string name="permission_msg1">·  <font color='#3CB5F8'>(필수) </font> 배터리 사용량 최적화 권한 </string>
+    <string name="permission_msg1_1">배터리 최적화에 의한 어플리케이션 강제 종료 방지를 위해 권한이 필요합니다.</string>
+    <string name="permission_msg2">·  <font color='#3CB5F8'>(필수) </font> 다른 앱 위에 표시 </string>
+    <string name="permission_msg2_1">보행 중 스마트폰 화면 차단 위해 권한이 필요합니다.</string>
+    <string name="permission_msg3">·  <font color='#3CB5F8'>(필수) </font> 저장공간 권한 </string>
+    <string name="permission_msg3_1"> 사용 로그 생성 저장을 위해 저장공간 권한이 필요합니다.</string>
 
-    <string name="main_start_time">서비스 시작 시간: </string>
-    <string name="main_service_state">서비스 상태: </string>
+    <string name="privacy_title">개인정보처리방침</string>
+
+    <string name="log_start_time">시작 시간</string>
+    <string name="log_end_time">종료 시간</string>
+    <string name="log_time">실행 시간</string>
+    <string name="log_step">걸음 수</string>
+    <string name="log_msg">* 걸음수는 스몸비 방지 화면이 켜져 있을 때만 카운트합니다.</string>
+
+
+    <string name="main_start_time">서비스 시작 시간 </string>
+    <string name="main_start_msg">서비스를\n실행해주세요. </string>
+    <string name="main_service_state">서비스 상태 </string>
     <string name="main_service_on">서비스 실행</string>
     <string name="main_step_cnt">걸음 수:  </string>
     <string name="main_email_hint">받을 이메일 주소</string>
 
+    <string name="setting_title">설정</string>
+    <string name="setting_email">받을 이메일 설정하기</string>
+    <string name="setting_email_current">현재 설정된 이메일</string>
+    <string name="setting_version">버전 정보</string>
+
+
     <string name="lock_screen_view_title">스몸비 방지 실행 중</string>
     <string name="lock_screen_view_step_cnt">걸음 수 </string>
-    <string name="lock_screen_view_msg">걸음 멈춘 10초후 unlock </string>
+    <string name="lock_screen_view_msg">걸음 멈춘 3초후 unlock </string>
 </resources>

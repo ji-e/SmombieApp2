@@ -1,10 +1,14 @@
-package com.example.smombieapp.view
+package com.example.smombieapp.view.log
 
 import android.database.Cursor
 import android.os.Bundle
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.smombieapp.base.BaseActivity
 import com.example.smombieapp.databinding.ActivityLogBinding
 import com.example.smombieapp.utils.LogUtil
+import org.json.JSONArray
+import org.json.JSONObject
+
 
 class LogActivity : BaseActivity() {
     private lateinit var binding: ActivityLogBinding
@@ -17,6 +21,7 @@ class LogActivity : BaseActivity() {
 
         Thread.setDefaultUncaughtExceptionHandler(UncaughtException())
 
+        initView()
     }
 
     override fun onResume() {
@@ -26,20 +31,26 @@ class LogActivity : BaseActivity() {
         setLogView()
     }
 
-    private fun setLogView() {
-        val sb = StringBuffer()
-        while (cursor?.moveToNext() == true) {
-            sb.append(
-//                    "${cursor.getInt(0)}\n" +
-//                    "${cursor.getString(1)} // " +
-                    "${cursor?.getString(2)} // " +
-                            "${cursor?.getString(3)} // " +
-                            "${cursor?.getString(4)} // " +
-                            "${cursor?.getString(5)}\n\n")
+    private fun initView() {
+        binding.logImgBack.setOnClickListener {
+            onBackPressed()
+        }
+    }
 
+    private fun setLogView() {
+
+        val listItem = JSONArray()
+        while (cursor?.moveToNext() == true) {
+            val item = JSONObject()
+            item.put("start", cursor?.getString(2))
+            item.put("end", cursor?.getString(3))
+            item.put("time", cursor?.getString(4))
+            item.put("step", cursor?.getString(5))
+            listItem.put(item)
         }
 
-        binding.logTv.text = sb.toString()
+        binding.logRecyclerview.layoutManager = LinearLayoutManager(this)
+        binding.logRecyclerview.adapter = LogAdapter(listItem)
     }
 
 

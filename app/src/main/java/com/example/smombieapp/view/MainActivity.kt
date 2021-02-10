@@ -6,16 +6,15 @@ import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.content.pm.PackageManager
+import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.shapes.OvalShape
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.os.PowerManager
 import android.provider.Settings
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
 import com.example.smombieapp.R
 import com.example.smombieapp.base.BaseActivity
@@ -25,6 +24,7 @@ import com.example.smombieapp.service.StepCallback
 import com.example.smombieapp.service.StepService
 import com.example.smombieapp.utils.*
 import com.example.smombieapp.view.dialog.CustomDialog
+import com.example.smombieapp.view.log.LogActivity
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import kotlin.math.abs
@@ -37,7 +37,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 
     private val db by lazy { DBHelper(this) }
 
-    private var stepServiceIntent: Intent? =null
+    private var stepServiceIntent: Intent? = null
 
     private val stepCallback: StepCallback = object : StepCallback {
         override fun onStepCallback(step: String) {
@@ -50,6 +50,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 
         override fun onEndService() {
             LogUtil.e("END_SERVICE")
+            binding.mainTvStartTime.text = getString(R.string.main_start_msg)
             binding.mainSwService.isChecked = false
         }
     }
@@ -62,7 +63,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
             LogUtil.e("SERVICE_CONNECTED")
 
-            if(!StepService.isService){
+            if (!StepService.isService) {
                 binding.mainSwService.isChecked = false
                 setServiceState("END")
                 return
@@ -94,8 +95,8 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         if (StepService.isService) {
             binding.mainSwService.isChecked = true
             binding.mainTvStartTime.text = StepService.startServiceTime
-        }else {
-            if(BaseApplication.useSharedPreference.getPreferencesData(Constants.IS_STEP_SERVICE) == "Y"){
+        } else {
+            if (BaseApplication.useSharedPreference.getPreferencesData(Constants.IS_STEP_SERVICE) == "Y") {
                 binding.mainSwService.isChecked = true
                 binding.mainTvStartTime.text = StepService.startServiceTime
             }
@@ -109,37 +110,48 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     override fun onClick(v: View?) {
         when (v) {
             binding.mainBtnLog -> startActivity(Intent(this, LogActivity::class.java))
-            binding.mainBtnEmail -> makeExcel()
+            binding.mainBtnEmail -> {
+                val email = BaseApplication.useSharedPreference.getPreferencesData(Constants.EXCEL_EMAIL)
+                if (email.isEmpty()) {
+                    showEmailDialog()
+                } else {
+                    makeExcel()
+                }
+            }
             binding.mainBtnBug -> {
                 val address = arrayOf(Constants.BUG_EMAIL)
                 EmailUtil().sendEmailToAdmin(this, getString(R.string.btn_bug), address)
+            }
+            binding.mainImgSetting -> {
+                startActivity(Intent(this, SettingActivity::class.java))
             }
         }
     }
 
     private fun initView() {
+        binding.mainImgSetting.setOnClickListener(this)
         binding.mainBtnLog.setOnClickListener(this)
         binding.mainBtnBug.setOnClickListener(this)
         binding.mainBtnEmail.setOnClickListener(this)
-        binding.mainEtEmail.addTextChangedListener(
-                object : TextWatcher {
-                    override fun afterTextChanged(s: Editable?) {
-
-                    }
-
-                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-                    }
-
-                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                        binding.mainBtnEmail.isEnabled = !s.isNullOrEmpty()
-                    }
-
-                }
-        )
+//        binding.mainEtEmail.addTextChangedListener(
+//                object : TextWatcher {
+//                    override fun afterTextChanged(s: Editable?) {
+//
+//                    }
+//
+//                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+//
+//                    }
+//
+//                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+//                        binding.mainBtnEmail.isEnabled = !s.isNullOrEmpty()
+//                    }
+//
+//                }
+//        )
         binding.mainSwService.setOnCheckedChangeListener { buttonView, isChecked ->
             try {
-                if(stepServiceIntent != null) {
+                if (stepServiceIntent != null) {
                     if (isChecked && !StepService.isService) {
                         LogUtil.e("SERVICE_START")
                         setServiceState("START")
@@ -153,24 +165,31 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                 LogUtil.e(e)
             }
         }
+
+        val color = ContextCompat.getColor(this, R.color.color_FFFFFF)
+        binding.mainImgSetting.setColorFilter(color)
+        binding.mainImgLogo.background = ShapeDrawable(OvalShape())
+        binding.mainImgLogo.clipToOutline = true
+
+
     }
 
     /** 권한체크 */
     private fun permissionCheck() {
         val permissionList = ArrayList<String>()
         val permission: Array<String> =
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                    arrayOf(
-                            Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE
-                    )
-                } else {
-                    arrayOf(
-                            Manifest.permission.ACTIVITY_RECOGNITION,
-                            Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE
-                    )
-                }
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                arrayOf(
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                )
+            } else {
+                arrayOf(
+                    Manifest.permission.ACTIVITY_RECOGNITION,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                )
+            }
 
         for (i in permission.indices) {
             val permissionCheck = ContextCompat.checkSelfPermission(this, permission[i])
@@ -182,7 +201,10 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 
         val pm = getSystemService(Context.POWER_SERVICE) as PowerManager
 
-        if (permissionList.isNotEmpty()|| !Settings.canDrawOverlays(this) ||!pm.isIgnoringBatteryOptimizations(packageName)) {
+        if (permissionList.isNotEmpty() || !Settings.canDrawOverlays(this) || !pm.isIgnoringBatteryOptimizations(
+                packageName
+            )
+        ) {
             showPermissionDialog()
         }
 
@@ -206,10 +228,16 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 
                 LogUtil.d(firstDate, currentDate, calDateDays)
 
-                if (calDateDays > 1) {
+                if (calDateDays > 14) {
                     db.onReset()
+                    db.insert(
+                        StepService.startServiceDate,
+                        StepService.startServiceTime,
+                        "",
+                        "",
+                        "0"
+                    )
                 }
-                db.insert(StepService.startServiceDate, StepService.startServiceTime, "", "", "0")
             }
 
         } catch (e: ParseException) {
@@ -222,19 +250,19 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     private fun showEndServiceDialog() {
         val customDialog = CustomDialog(this).apply {
             setBottomDialog(
-                    getString(R.string.dialog_title),
-                    getString(R.string.dialog_end_service_content),
-                    null,
-                    getString(R.string.btn_cancel),
-                    View.OnClickListener {
-                        dismiss()
-                        binding.mainSwService.isChecked = true
-                    },
-                    getString(R.string.btn_confirm),
-                    View.OnClickListener {
-                        dismiss()
-                        setServiceState("END")
-                    }
+                getString(R.string.dialog_title),
+                getString(R.string.dialog_end_service_content),
+                null,
+                getString(R.string.btn_cancel),
+                View.OnClickListener {
+                    dismiss()
+                    binding.mainSwService.isChecked = true
+                },
+                getString(R.string.btn_confirm),
+                View.OnClickListener {
+                    dismiss()
+                    setServiceState("END")
+                }
 
             )
         }
@@ -245,14 +273,31 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     private fun showPermissionDialog() {
         val customDialog = CustomDialog(this).apply {
             setBottomDialog(
-                    getString(R.string.dialog_title),
-                    getString(R.string.dialog_permission_content),
-                    null,
-                    getString(R.string.btn_confirm),
-                    View.OnClickListener {
-                        dismiss()
-                        finish()
-                    }
+                getString(R.string.dialog_title),
+                getString(R.string.dialog_permission_content),
+                null,
+                getString(R.string.btn_confirm),
+                View.OnClickListener {
+                    dismiss()
+                    finish()
+                }
+
+            )
+        }
+        customDialog.show()
+    }
+
+    /** 이메일로 내보내기 팝업 */
+    private fun showEmailDialog() {
+        val customDialog = CustomDialog(this).apply {
+            setBottomDialog(
+                getString(R.string.dialog_title),
+                getString(R.string.dialog_email_content2),
+                null,
+                getString(R.string.btn_confirm),
+                View.OnClickListener {
+                    dismiss()
+                }
 
             )
         }
@@ -276,11 +321,14 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         }
     }
 
+
     /** 엑셀파일 생성 완료*/
     private var excelCallback = object : ExcelCallback {
         override fun onClose() {
             CustomLoading.hideLoadingBar()
-            val address = arrayOf(binding.mainEtEmail.text.toString())
+            val email =
+                BaseApplication.useSharedPreference.getPreferencesData(Constants.EXCEL_EMAIL)
+            val address = arrayOf(email)
             EmailUtil().sendEmailExcel(this@MainActivity, getString(R.string.btn_email), address)
         }
     }
