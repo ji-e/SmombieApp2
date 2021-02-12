@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.smombieapp">
+    package="com.picka.smombieapp">
     <!-- <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> -->
     <!-- <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
@@ -13,18 +13,18 @@
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
     <application
-        android:name=".base.BaseApplication"
+        android:name="com.picka.smombieapp.base.BaseApplication"
         android:allowBackup="true"
         android:icon="@drawable/smombie_logo"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.SmombieApp"
         android:usesCleartextTraffic="true">
-        <activity android:name=".view.SettingActivity"></activity>
-        <activity android:name=".view.intro.PrivacyActivity" />
+        <activity android:name="com.picka.smombieapp.view.SettingActivity"></activity>
+        <activity android:name="com.picka.smombieapp.view.intro.PrivacyActivity" />
 
         <receiver
-            android:name=".brodcast.SmombieReceiver"
+            android:name="com.picka.smombieapp.brodcast.SmombieReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -44,18 +44,18 @@
         <!-- </intent-filter> -->
         <!-- </receiver> -->
         <receiver
-            android:name=".brodcast.ScreenReceiver"
+            android:name="com.picka.smombieapp.brodcast.ScreenReceiver"
             android:enabled="true"
             android:exported="true" />
 
         <service
-            android:name=".service.StepService"
+            android:name="com.picka.smombieapp.service.StepService"
             android:enabled="true"
             android:exported="false" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.example.smombieapp"
+            android:authorities="com.picka.smombieapp"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -63,16 +63,16 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <activity android:name=".view.intro.SplashActivity">
+        <activity android:name="com.picka.smombieapp.view.intro.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.MainActivity" />
-        <activity android:name=".view.intro.PermissionActivity" />
-        <activity android:name=".view.log.LogActivity" />
+        <activity android:name="com.picka.smombieapp.view.MainActivity" />
+        <activity android:name="com.picka.smombieapp.view.intro.PermissionActivity" />
+        <activity android:name="com.picka.smombieapp.view.log.LogActivity" />
     </application>
 
 </manifest>

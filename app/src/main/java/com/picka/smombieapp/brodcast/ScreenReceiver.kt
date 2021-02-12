@@ -1,0 +1,35 @@
+package com.picka.smombieapp.brodcast
+
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import com.picka.smombieapp.service.StepCallback
+import com.picka.smombieapp.utils.LogUtil
+
+
+class ScreenReceiver : BroadcastReceiver() {
+    private var callback: ScreenCallback? = null
+    fun setCallback(callback: ScreenCallback) {
+        this.callback = callback
+    }
+
+
+    var isScreenON = true
+    override fun onReceive(context: Context?, intent: Intent?) {
+        val action = intent!!.action
+        LogUtil.d("isScreenON : $action")
+
+        when (action) {
+            Intent.ACTION_SCREEN_ON -> {
+                callback?.onScreenON(true)
+                isScreenON = true
+            }
+            Intent.ACTION_SCREEN_OFF -> {
+                callback?.onScreenON(false)
+                isScreenON = false
+            }
+        }
+    }
+}
+
