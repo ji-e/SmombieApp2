@@ -49,13 +49,24 @@ class HistoryActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener, Vi
 
 
         initView()
+        cursor = getLogCursor()
+        setHistoryList()
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onClick(v: View?) {
+        if (!onSingleClick()) return
+        when (v) {
+            binding.historyBtnInfo -> showInfoDialog()
+            binding.historyBtnBack -> onBackPressed()
+            binding.historyBtnSend -> showSendDialog()
+        }
+    }
 
+    override fun onRefresh() {
+        binding.historySwipe.isRefreshing = true
         cursor = getLogCursor()
-        setLogView()
+        setHistoryList()
+        update()
     }
 
     private fun initView() {
@@ -68,76 +79,54 @@ class HistoryActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener, Vi
 
     }
 
-    private fun setLogView() {
-        var date = ""
-        var start = ""
-        var end = ""
-        var time = ""
-        var step = ""
-        var endCnt = 1
-        var index = 0
-
+    /** 기록리스트 세팅**/
+    private fun setHistoryList() {
         var historyList = mutableListOf<HistoryData>()
         val historyList2 = mutableListOf<HistoryData2>()
         val cnt = if (cursor == null) 0 else cursor?.count
+        var preDate = ""
+        var preTime = ""
+        var preStep = ""
+        var preEndCnt = 1
+        var index = 0
 
         while (cursor?.moveToNext() == true) {
-            val c1 = "${cursor?.getString(1)}"
-            val c2 = "${cursor?.getString(2)}"
-            val c3 = "${cursor?.getString(3)}"
-            val c4 = "${cursor?.getString(4)}"
-            val c5 = "${cursor?.getString(5)}"
+            val date = "${cursor?.getString(1)}"
+            val startTime = "${cursor?.getString(2)}"
+            val endTime = "${cursor?.getString(3)}"
+            val time = "${cursor?.getString(4)}"
+            val step = "${cursor?.getString(5)}"
 
-            historyList2.add(
-                HistoryData2(
-                    c1, c2, c3, c4, c5
-                )
-            )
+            historyList2.add(HistoryData2(
+                date, startTime, endTime, time, step
+            ))
 
             if (index == 0) {
-                date = c1
-                start = c2
-                end = c3
-                time = c4
-                step = c5
+                preDate = date
+                preTime = time
+                preStep = step
             }
 
             if (index > 0) {
-                if (date == c1) {
-                    endCnt++
-                    time = BaseApplication().getTotalTime(time, c4)
-                    step = (step.toInt() + c5.toInt()).toString()
+                if (preDate == date) {
+                    preEndCnt++
+                    preTime = BaseApplication().getTotalTime(preTime, time)
+                    preStep = StringFormatUtil().sum(preStep, step)
                 } else {
-                    historyList.add(
-                        HistoryData(
-                            date,
-                            time,
-                            step,
-                            endCnt.toString(),
-                            null
-                        )
-                    )
-
-                    date = c1
-                    start = c2
-                    end = c3
-                    time = c4
-                    step = c5
-                    endCnt = 1
-
+                    historyList.add(HistoryData(
+                        preDate, preTime, preStep, preEndCnt.toString(), null
+                    ))
+                    preDate = date
+                    preTime = time
+                    preStep = step
+                    preEndCnt = 1
                 }
             }
 
             if (cnt != null && index == (cnt - 1)) {
-                historyList.add(
-                    HistoryData(
-                        date,
-                        time,
-                        step,
-                        endCnt.toString(),
-                        null
-                    )
-                )
+                historyList.add(HistoryData(
+                    preDate, preTime, preStep, preEndCnt.toString(), null
+                ))
             }
             index++
         }
@@ -146,41 +135,38 @@ class HistoryActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener, Vi
             binding.historyLayEmpty.visibility = View.VISIBLE
             binding.historySwipe.visibility = View.GONE
         } else {
-
-            val s =  ("(\\d{4})(\\d{2})(\\d{2})").toRegex().replace((historyList[0].date.toString()), "$1.$2.$3")
-            val e =  ("(\\d{4})(\\d{2})(\\d{2})").toRegex().replace((historyList[historyList.size - 1].date.toString()), "$1.$2.$3")
-            update()
-            binding.historyTvDate.text = "$s ~ $e"
-            historyList =
-                (historyList.sortedByDescending { myObject -> myObject.date }).toMutableList()
             binding.historyLayEmpty.visibility = View.GONE
             binding.historySwipe.visibility = View.VISIBLE
+
+            update()
+            val date1 = DateFormatUtil().getDotDate(historyList[0].date.toString())
+            val date2 = DateFormatUtil().getDotDate(historyList[historyList.size - 1].date.toString())
+            binding.historyTvDate.text = "$date1 ~ $date2"
+
+            historyList = (historyList.sortedByDescending { myObject -> myObject.date }).toMutableList()
+
             binding.logRecyclerview.layoutManager = LinearLayoutManager(this)
             binding.logRecyclerview.adapter = HistoryAdapter(this, historyList, historyList2)
             loadingFinishCallbackListener.onLoadingFinish(true)
         }
     }
 
+    /** 새로고침 날짜 업데이트 */
     private fun update() {
         var dateH = SimpleDateFormat("HH", Locale.getDefault()).format(Date())
         val dateM = SimpleDateFormat("mm", Locale.getDefault()).format(Date())
-        val dateP: String
-        if (dateH.toInt() >= 12) {
-            dateP = getString(R.string.history_pm)
-            dateH = SimpleDateFormat("hh", Locale.getDefault()).format(Date())
-        } else {
-            dateP = getString(R.string.history_am)
-        }
+        dateH = DateFormatUtil().getAMPMTime(dateH)
 
-        binding.historyTvUpdate.text = "$dateP $dateH:$dateM, ${getString(R.string.history_update)}"
+        binding.historyTvUpdate.text = "$dateH:$dateM, ${getString(R.string.history_update)}"
 
     }
 
+    /** 기록 안내 다이얼로그 */
     private fun showInfoDialog() {
         CustomHistoryInfoDialog(this).show()
     }
 
-
+    /** 내보내기 다이얼로그 */
     private fun showSendDialog() {
         val customHistorySendListener = object : CustomHistorySendListener {
             override fun onSendEmail(e: String) {
@@ -193,7 +179,6 @@ class HistoryActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener, Vi
 
     }
 
-
     /** 엑셀파일 생성 완료*/
     private var excelCallback = object : ExcelCallback {
         override fun onClose() {
@@ -202,7 +187,6 @@ class HistoryActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener, Vi
             EmailUtil().sendEmailExcel(this@HistoryActivity, getString(R.string.btn_email), address)
         }
     }
-
 
     /** 엑셀파일 생성 */
     private fun makeExcel() {
@@ -226,20 +210,5 @@ class HistoryActivity : BaseActivity(), SwipeRefreshLayout.OnRefreshListener, Vi
             LogUtil.e(t, e)
         }
 
-    }
-
-    override fun onRefresh() {
-        binding.historySwipe.isRefreshing = true
-        cursor = getLogCursor()
-        setLogView()
-        update()
-    }
-
-    override fun onClick(v: View?) {
-        when (v) {
-            binding.historyBtnInfo -> showInfoDialog()
-            binding.historyBtnBack -> onBackPressed()
-            binding.historyBtnSend -> showSendDialog()
-        }
     }
 }

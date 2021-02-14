@@ -6,12 +6,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.picka.smombieapp.R
-import com.picka.smombieapp.base.BaseApplication
-import com.picka.smombieapp.data.HistoryData
 import com.picka.smombieapp.data.HistoryData2
+import com.picka.smombieapp.utils.DateFormatUtil
 import com.picka.smombieapp.utils.LogUtil
-import java.text.SimpleDateFormat
-import java.util.*
 
 
 class HistoryAdapter2(private val itemList: MutableList<HistoryData2>) :
@@ -34,37 +31,17 @@ class HistoryAdapter2(private val itemList: MutableList<HistoryData2>) :
         val holder = viewHolder as ViewHolder
         val item = itemList[i]
         try {
-            val start1 = item.start?.split(" ")
-            val start = start1?.get(1)?.split(":")
-            val end1 = item.end?.split(" ")
-            if (end1 != null && end1.size>1) {
-                val end = end1[1].split(":")
-                if (end.size>1)
-                    holder.end.text = "${end[0]}:${end[1]}"
-            } else {
-                holder.end.text = "-"
-            }
-            val time = item.time?.split(":")
-            if (time != null && time.size>1) {
-                if (time.size == 2) {
-                    holder.time.text = "${time[0]}분 ${time[1]}초"
-                } else {
-                    holder.time.text = "${time[0]}시간 ${time[1]}분 ${time[2]}초"
-                }
-            } else {
-                holder.time.text = "-"
-            }
-
-            holder.start.text = "${start?.get(0)}:${start?.get(1)}"
+            holder.start.text = DateFormatUtil().getTimeColon("${item.start}")
+            holder.end.text = DateFormatUtil().getTimeColon("${item.end}")
+            holder.time.text = DateFormatUtil().getTimeHMS("${item.time}")
             holder.step.text = item.step
 
         } catch (e: Exception) {
-            e.printStackTrace()
+//            e.printStackTrace()
             LogUtil.e(e)
         }
 
     }
-
 
     override fun getItemCount(): Int {
         return itemList.size

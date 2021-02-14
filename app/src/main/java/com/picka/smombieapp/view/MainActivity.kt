@@ -115,6 +115,8 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
+        if (!onSingleClick()) return
+
         when (v) {
             binding.mainLayMenu.menuBtnClose ->  binding.mainDrawer.closeDrawer((GravityCompat.END))
             binding.mainLayMenu.menuTvHistroy -> startActivity(Intent(this, HistoryActivity::class.java))
@@ -145,7 +147,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 
                 }
             } catch (e: Exception) {
-                e.printStackTrace()
+//                e.printStackTrace()
                 LogUtil.e(e)
             }
         }
@@ -311,14 +313,8 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         val D = start.subSequence(6,8)
         var h = start.substring(9,11)
         val m = start.substring(12,14)
-        val dateP:String
-        if (h.toInt() >= 12) {
-            h = (h.toInt() - 12).toString()
-            dateP = getString(R.string.history_pm)
-        } else {
-            dateP = getString(R.string.history_am)
-        }
-        binding.mainTvStartTime.text = "$dateP ${h}시 ${m}분, ${M}월 ${D}일"
+        h = DateFormatUtil().getAMPMTime(h)
+        binding.mainTvStartTime.text = "${h}시 ${m}분, ${M}월 ${D}일"
     }
 
     inner class UncaughtException : Thread.UncaughtExceptionHandler {
