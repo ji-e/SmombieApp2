@@ -1,15 +1,10 @@
 package com.picka.smombieapp.service
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.Service
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.PixelFormat
-import android.graphics.drawable.ShapeDrawable
-import android.graphics.drawable.shapes.OvalShape
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -19,32 +14,30 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
-import android.widget.Button
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.app.NotificationCompat
 import com.picka.smombieapp.R
 import com.picka.smombieapp.base.BaseApplication
-import com.picka.smombieapp.brodcast.ScreenCallback
-import com.picka.smombieapp.brodcast.ScreenReceiver
-import com.picka.smombieapp.brodcast.SmombieReceiver
+import com.picka.smombieapp.brodcast.*
 import com.picka.smombieapp.utils.Constants
 import com.picka.smombieapp.utils.DBHelper
 import com.picka.smombieapp.utils.LogUtil
 import com.picka.smombieapp.view.MainActivity
+import java.util.*
 
 
 class StepService : Service(), SensorEventListener {
     companion object {
-        var isService = false
-        var isReceiver = false
-        var startServiceDate = ""
-        var startServiceTime = ""
-        var endServiceTime = ""
-        var smombieStep = 0f
+        var isService = false           // 서비스 실행 여부
+        var isReceiver = false          // 리시버 등록 여부
+        var startServiceDate = ""       // 서비스 실행 시작 날짜
+        var startServiceTime = ""       // 서비스 실행 시작 시간
+        var endServiceTime = ""         // 서비스 실행 종료 시간
+        var smombieStep = 0f            // 서비스 실행 중 걸음 수
     }
 
     private val mStepBinder: StepBinder = StepBinder()
+
     private val screenReceiver = ScreenReceiver()
     private val smombieReceiver = SmombieReceiver()
 
@@ -57,22 +50,22 @@ class StepService : Service(), SensorEventListener {
     private var wm: WindowManager? = null
     private var mView: View? = null
 
-    var isLock = false
-    var step = 0f
-    var stepCnt = 0f
-    var isScreenOn = true
+    private var alarmMgr: AlarmManager? = null
 
+    private var step = 0f
+    private var stepCnt = 0f
+    private var isScreenOn = true       // 스크린 ON/OFF 여부
+    private var isLock = false          // 스크린 스몸비 잠금 여부
 
     private val screenCallback = object : ScreenCallback {
         override fun onScreenON(screenOn: Boolean) {
             isScreenOn = screenOn
-            if(!isScreenOn){
+            if (!isScreenOn) {
                 hideLockScreen()
                 isLock = false
             }
         }
     }
-
 
     private val countDownTimer = object : CountDownTimer(3000, 1000) {
         override fun onTick(millisUntilFinished: Long) {
@@ -109,19 +102,12 @@ class StepService : Service(), SensorEventListener {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         LogUtil.e("onStartCommand_StepService", intent?.action)
-//        if (intent?.action == Constants.STEP_SERVICE_START) {
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         stepDetectorSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR)
         stepCountSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
         if (stepDetectorSensor != null || stepCountSensor != null) {
             onStartFore()
-        } else {
-//            onStopFore()
         }
-//        } else {
-//            onStopFore()
-//        }
-
         return super.onStartCommand(intent, flags, startId)
     }
 
@@ -134,7 +120,6 @@ class StepService : Service(), SensorEventListener {
     override fun onSensorChanged(event: SensorEvent) {
         if (event.sensor.type == Sensor.TYPE_STEP_DETECTOR) {
             stepChange()
-//            LogUtil.d("TYPE_STEP_DETECTOR: ${event.values[0]}, $smombieStep")
         } else if (event.sensor.type == Sensor.TYPE_STEP_COUNTER) {
             if (step < 1) {
                 step = event.values[0]
@@ -147,7 +132,6 @@ class StepService : Service(), SensorEventListener {
                 smombieStep++
                 sp.setPreferencesData(Constants.STEP_SERVICE_STEP, smombieStep.toInt().toString())
             }
-//            LogUtil.d("TYPE_STEP_COUNTER: ${event.values[0]}, $stepCnt, $smombieStep")
         }
     }
 
@@ -158,16 +142,19 @@ class StepService : Service(), SensorEventListener {
         if (sp.getPreferencesData(Constants.IS_STEP_SERVICE) == "Y") {
             startServiceDate = sp.getPreferencesData(Constants.STEP_SERVICE_DATE)
             startServiceTime = sp.getPreferencesData(Constants.STEP_SERVICE_TIME)
-            smombieStep = sp.getPreferencesData(Constants.STEP_SERVICE_STEP).toFloat()
+            smombieStep =
+                if(sp.getPreferencesData(Constants.STEP_SERVICE_STEP).isEmpty()) 0f
+                else sp.getPreferencesData(Constants.STEP_SERVICE_STEP).toFloat()
         } else {
             startServiceDate = BaseApplication().getDate()
             startServiceTime = BaseApplication().getDateTime()
         }
+
         isService = true
 
         sensorRegisterManager()
         screenRegisterReceiver()
-
+        midnightRegisterAlarmManager()
         showNotification()
 
         sp.setPreferencesData(Constants.IS_STEP_SERVICE, "Y")
@@ -183,15 +170,15 @@ class StepService : Service(), SensorEventListener {
     /** 센서 등록 */
     private fun sensorRegisterManager() {
         sensorManager?.registerListener(
-                this,
-                stepDetectorSensor,
-                SensorManager.SENSOR_DELAY_FASTEST
+            this,
+            stepDetectorSensor,
+            SensorManager.SENSOR_DELAY_FASTEST
         )
 
         sensorManager?.registerListener(
-                this,
-                stepCountSensor,
-                SensorManager.SENSOR_DELAY_FASTEST
+            this,
+            stepCountSensor,
+            SensorManager.SENSOR_DELAY_FASTEST
         )
     }
 
@@ -223,17 +210,44 @@ class StepService : Service(), SensorEventListener {
     /** 스크린 리시버 해제 */
     private fun screenUnregisterReceiver() {
         if (!isReceiver) return
+
+        isReceiver = false
         try {
             unregisterReceiver(screenReceiver)
             unregisterReceiver(smombieReceiver)
-            isReceiver = false
         } catch (e: IllegalArgumentException) {
-            isReceiver = false
             LogUtil.e(e)
         } catch (e: Exception) {
-            isReceiver = false
             LogUtil.e(e)
         }
+    }
+
+    /** 자정 알람매니저 등록 */
+    private fun midnightRegisterAlarmManager() {
+        LogUtil.e("midnightCall")
+        val alarmBroadcastReceiverIntent = Intent(this, MidnightCallReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(this, 0, alarmBroadcastReceiverIntent, 0)
+        alarmMgr = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        val resetCal = Calendar.getInstance().apply {
+            timeInMillis = System.currentTimeMillis()
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+        }
+
+        alarmMgr?.setExactAndAllowWhileIdle(
+            AlarmManager.RTC_WAKEUP,
+            resetCal.timeInMillis + AlarmManager.INTERVAL_DAY,
+            pendingIntent
+        )
+    }
+
+    /** 자정 알람매니저 해제 */
+    private fun midnightUnregisterAlarmManager(){
+        val alarmBroadcastReceiverIntent = Intent(this, MidnightCallReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(this, 0, alarmBroadcastReceiverIntent, 0)
+        alarmMgr?.cancel(pendingIntent)
     }
 
     /** 알림창 */
@@ -243,22 +257,22 @@ class StepService : Service(), SensorEventListener {
         }
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
         val notificationBuilder =
-                NotificationCompat.Builder(applicationContext, Constants.CHANNEL_ID)
-                        .setSmallIcon(R.drawable.logo)
-                        .setContentText(getString(R.string.notification_body))
-                        .setAutoCancel(false)
-                        .setContentIntent(pendingIntent)
-                        .setShowWhen(false)
+            NotificationCompat.Builder(applicationContext, Constants.CHANNEL_ID)
+                .setSmallIcon(R.drawable.logo)
+                .setContentText(getString(R.string.notification_body))
+                .setAutoCancel(false)
+                .setContentIntent(pendingIntent)
+                .setShowWhen(false)
 
         val notificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         // android Oreo 알림 채널이 필요
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
-                    Constants.CHANNEL_ID,
-                    Constants.CHANNEL_NAME,
-                    NotificationManager.IMPORTANCE_DEFAULT
+                Constants.CHANNEL_ID,
+                Constants.CHANNEL_NAME,
+                NotificationManager.IMPORTANCE_DEFAULT
             )
             notificationManager.createNotificationChannel(channel)
         }
@@ -274,11 +288,15 @@ class StepService : Service(), SensorEventListener {
         sp.setPreferencesData(Constants.STEP_SERVICE_STEP, "0")
         sp.removePreferencesData(Constants.STEP_SERVICE_DATE)
         sp.removePreferencesData(Constants.STEP_SERVICE_TIME)
+
         isService = false
         stepCnt = 0f
         step = 0f
         smombieStep = 0f
+
         countDownTimer.cancel()
+
+        midnightUnregisterAlarmManager()
         sensorUnregisterManager()
         screenUnregisterReceiver()
     }
@@ -290,29 +308,28 @@ class StepService : Service(), SensorEventListener {
 
             isLock = true
             val type =
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-                    } else {
-                        WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
-                    }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+                } else {
+                    WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
+                }
             val params = WindowManager.LayoutParams(
-                    WindowManager.LayoutParams.MATCH_PARENT,
-                    WindowManager.LayoutParams.MATCH_PARENT,
-                    type,
-                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                            or WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
-                            or WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
-                    PixelFormat.TRANSLUCENT
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.MATCH_PARENT,
+                type,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                        or WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+                        or WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
+                PixelFormat.TRANSLUCENT
             )
-//            params.horizontalMargin = 10f
-//            params.verticalMargin = 10f
+
             val inflate = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
             wm = getSystemService(Context.WINDOW_SERVICE) as WindowManager
             mView = inflate.inflate(R.layout.lock_screen_view, null, false)
 
             if (wm != null && mView != null) {
-                val lockScreenBtnCall = mView!!.findViewById<TextView>(R.id.lock_screen_btn_emergency)
+                val lockScreenBtnCall = mView!!.findViewById<TextView>(R.id.lock_btn_emergency)
                 lockScreenBtnCall.setOnClickListener {
                     // 1분동안 잠금화면 풀기
                     LogUtil.e("긴급해제")
@@ -326,9 +343,6 @@ class StepService : Service(), SensorEventListener {
                     }, 1000 * 60)
 
                 }
-                val logo = mView!!.findViewById<ImageView>(R.id.lock_img_logo)
-                logo.background = ShapeDrawable(OvalShape())
-                logo.clipToOutline = true
 
                 wm?.addView(mView, params)
             }
@@ -359,28 +373,51 @@ class StepService : Service(), SensorEventListener {
         }
 
         if (mView != null) {
-            val lockScreenStepCnt = mView!!.findViewById<TextView>(R.id.lock_screen_step_cnt)
-            lockScreenStepCnt.text = "${smombieStep.toInt()}"
+            val lockScreenStepCnt = mView!!.findViewById<TextView>(R.id.lock_tv_step_cnt)
+            val lockScreenBtnCall = mView!!.findViewById<TextView>(R.id.lock_btn_emergency)
+            val lockScreenTvTitle = mView!!.findViewById<TextView>(R.id.lock_tv_title)
+            val lockScreenTvSubTitle = mView!!.findViewById<TextView>(R.id.lock_tv_subtitle)
+            var step = "${smombieStep.toInt()}"
+            when {
+                smombieStep.toInt() < 10 -> {
+                    step = "0${smombieStep.toInt()}"
+                }
+                smombieStep.toInt() > 99 -> {
+                    lockScreenStepCnt.setTextColor(getColor(R.color.color_primary_red))
+                    lockScreenBtnCall.setTextColor(getColor(R.color.color_primary_red))
+                    lockScreenTvTitle.text = getString(R.string.lock_screen_view_title2)
+                    lockScreenTvSubTitle.text = getString(R.string.lock_screen_view_subtitle2)
+                }
+                else -> {
+                    step = "${smombieStep.toInt()}"
+                }
+            }
+
+            lockScreenStepCnt.text = step
         }
     }
 
     /** Smombie DB Update */
     private fun endUpdate() {
         DBHelper(this).update(
-                startServiceDate,
-                startServiceTime,
-                endServiceTime,
-                BaseApplication().getTime(),
-                smombieStep.toInt().toString()
+            startServiceDate,
+            startServiceTime,
+            endServiceTime,
+            BaseApplication().getTime(),
+            smombieStep.toInt().toString()
         )
     }
 
     /** 시작시간 DB Insert */
     private fun startInsert() {
         DBHelper(this).delete(startServiceTime)
-        DBHelper(this).insert(startServiceDate, startServiceTime, "", "", "0")
+        DBHelper(this).insert(
+            startServiceDate,
+            startServiceTime,
+            "",
+            "",
+            "0")
     }
-
 
     override fun onDestroy() {
         super.onDestroy()

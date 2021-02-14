@@ -22,12 +22,8 @@ class SplashActivity : BaseActivity(){
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.logo.background = ShapeDrawable(OvalShape())
-        binding.logo.clipToOutline = true
-
         Handler(Looper.getMainLooper()).postDelayed(
             {
-                // todo 스플래시
                 startActivity(Intent(this@SplashActivity, PermissionActivity::class.java))
                 finish()
             }

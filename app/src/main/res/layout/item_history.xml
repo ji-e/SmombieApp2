@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingVertical="@dimen/dimen_05dp">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/history_tv_date"
+            style="@style/Font_16_primaryBlack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dimen_15dp"
+            tools:text="2월 03일" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dimen_01dp"
+            android:layout_weight="1"
+            android:background="@color/color_primary_black" />
+
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_10dp"
+        android:background="@drawable/rectangle_r24_ffffff_s"
+        android:padding="@dimen/dimen_20dp">
+
+        <TextView
+            android:id="@+id/history_txt_time"
+            style="@style/Font_14_primaryBlack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/history_time"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/history_txt_step"
+            style="@style/Font_14_primaryBlack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/dimen_10dp"
+            android:text="@string/history_step"
+            app:layout_constraintBottom_toTopOf="@id/history_txt_end_cnt"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/history_txt_time" />
+
+        <TextView
+            android:id="@+id/history_txt_end_cnt"
+            style="@style/Font_14_primaryBlack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/history_end_cnt"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/history_tv_time"
+            style="@style/Font_14_primaryBlue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dimen_05dp"
+            app:layout_constraintStart_toEndOf="@id/history_txt_time"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="9시간 13분" />
+
+        <TextView
+            android:id="@+id/history_tv_step"
+            style="@style/Font_14_primaryBlue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/dimen_10dp"
+            android:layout_marginStart="@dimen/dimen_05dp"
+            app:layout_constraintBottom_toTopOf="@id/history_txt_end_cnt"
+            app:layout_constraintStart_toEndOf="@id/history_txt_time"
+            app:layout_constraintTop_toBottomOf="@id/history_txt_time"
+            tools:text="201걸음" />
+
+        <TextView
+            android:id="@+id/history_tv_end_cnt"
+            style="@style/Font_14_primaryRed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dimen_05dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/history_txt_time"
+            tools:text="1회" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/dimen_11dp"
+        android:layout_marginBottom="@dimen/dimen_30dp"
+        android:layout_weight="1"
+        android:background="@drawable/rectangle_r24_light"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/dimen_20dp"
+        android:paddingTop="@dimen/dimen_20dp"
+        android:paddingBottom="@dimen/dimen_12dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/Font_14_primaryBlack"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/history_txt_start_time" />
+
+            <TextView
+                style="@style/Font_14_primaryBlack"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/history_txt_end_time" />
+
+            <TextView
+                style="@style/Font_14_primaryBlack"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:text="@string/history_txt_time" />
+
+            <TextView
+                style="@style/Font_14_primaryBlack"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.7"
+                android:text="@string/history_txt_step"
+                android:textAlignment="textEnd" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_01dp"
+            android:layout_marginVertical="@dimen/dimen_06dp"
+            android:background="@color/color_medium" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/history_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/item_history2" />
+    </LinearLayout>
+
+
+</LinearLayout>

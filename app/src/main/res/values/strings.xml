@@ -2,44 +2,65 @@
     <string name="app_name">Smombie</string>
     <string name="exit_msg">한 번 더 뒤로가기 누를 시 종료됩니다.</string>
     <string name="notification_body">스몸비 방지 실행 중</string>
+    <string name="notification_body2">00시 기록이 완료되었습니다.</string>
 
     <string name="btn_confirm">확인</string>
     <string name="btn_cancel">취소</string>
     <string name="btn_start">ON</string>
     <string name="btn_end">OFF</string>
-    <string name="btn_exit">서비스 종료</string>
-    <string name="btn_emergency">1분\n긴급 해제</string>
+    <string name="btn_exit">종료하기</string>
+    <string name="btn_emergency">1분 긴급해제</string>
     <string name="btn_log">스몸비 로그</string>
-    <string name="btn_bug">버그 제보</string>
+    <string name="btn_bug">제보하기</string>
     <string name="btn_reset">초기화</string>
-    <string name="btn_email">이메일로 내보내기</string>
+    <string name="btn_email">기록 내보내기</string>
+    <string name="btn_email2">내보내기</string>
     <string name="btn_agree">동의</string>
 
     <string name="dialog_title">알림</string>
-    <string name="dialog_end_service_content">서비스를 종료하시겠습니까?</string>
+    <string name="dialog_end_service_content">Smombie를\n종료하시겠습니까?</string>
+    <string name="dialog_end_service_content2">서비스를 종료하시면 사용 기록에\n종료 일자와 시간이 자동으로 입력됩니다.</string>
     <string name="dialog_reset_content">초기화 하시겠습니까?</string>
     <string name="dialog_permission_content">권한 설정 필수</string>
     <string name="dialog_email_content">이메일이 등록되었습니다.</string>
     <string name="dialog_email_content2">등록된 이메일이 없습니다.</string>
+    <string name="dialog_history_content"><font color='#0085FF'>Smombie 사용 기록</font>은</string>
+    <string name="dialog_history_content2">Smombie에서 카운트 된 걸음 수는 자동으로 최대 2주간 기록이 저장되며 2주가 지나면 기록은 자동 삭제됩니다.</string>
+    <string name="dialog_history_content3">걸음 수는 스몸비 방지 화면이 켜진 상태에서만 카운트 됩니다.</string>
+    <string name="dialog_history_send_content">기록파일을 전달받을<font color='#0085FF'>\n이메일을 입력해주세요.</font></string>
+    <string name="dialog_history_send_hint">id@email.com</string>
 
     <string name="permission_title">권한 확인</string>
-    <string name="permission_msg1">·  <font color='#3CB5F8'>(필수) </font> 배터리 사용량 최적화 권한 </string>
+    <string name="permission_msg1"><font color='#0085FF'>(필수) </font> 배터리 사용량 최적화 권한 </string>
     <string name="permission_msg1_1">배터리 최적화에 의한 어플리케이션 강제 종료 방지를 위해 권한이 필요합니다.</string>
-    <string name="permission_msg2">·  <font color='#3CB5F8'>(필수) </font> 다른 앱 위에 표시 </string>
+    <string name="permission_msg2"><font color='#0085FF'>(필수) </font> 다른 앱 위에 표시 </string>
     <string name="permission_msg2_1">보행 중 스마트폰 화면 차단 위해 권한이 필요합니다.</string>
-    <string name="permission_msg3">·  <font color='#3CB5F8'>(필수) </font> 저장공간 권한 신체 활동 정보 </string>
+    <string name="permission_msg3"><font color='#0085FF'>(필수) </font> 저장공간 권한</string>
     <string name="permission_msg3_1"> 사용 로그 생성 저장을 위해 저장공간 권한이 필요합니다.</string>
-    <string name="permission_msg4">·  <font color='#3CB5F8'>(필수) </font> 신체 활동 정보 </string>
+    <string name="permission_msg4"><font color='#0085FF'>(필수) </font> 신체 활동 정보 </string>
     <string name="permission_msg4_1">보행 중 스마트폰 화면 차단 위해 권한이 필요합니다.</string>
+    <string name="permission_notic">※ 필수 권한을 허용하지 않을 시 앱 작동이 중지됩니다.</string>
 
     <string name="privacy_title">개인정보처리방침</string>
 
     <string name="log_start_time">시작 시간</string>
     <string name="log_end_time">종료 시간</string>
-    <string name="log_time">실행 시간</string>
-    <string name="log_step">걸음 수</string>
+    <string name="history_time">실행시간 :</string>
+    <string name="history_step">걸음 수 :</string>
+    <string name="history_end_cnt">종료횟수 :</string>
+    <string name="history_txt_start_time">시작</string>
+    <string name="history_txt_end_time">종료</string>
+    <string name="history_txt_time">실행시간</string>
+    <string name="history_txt_step">걸음 수</string>
     <string name="log_msg">* 걸음수는 스몸비 방지 화면이 켜져 있을 때만 카운트합니다.</string>
-
+    <string name="history_title">사용기록</string>
+    <string name="history_period">사용 기간</string>
+    <string name="history_empty"><font color='#0085FF'>Smombie</font>를 사용한\n기록이 없어요.</string>
+    <string name="history_am">오전</string>
+    <string name="history_pm">오후</string>
+    <string name="history_update">오늘 업데이트</string>
+    <string name="history_today">오늘</string>
+    <string name="history_yesterday">어제</string>
 
     <string name="main_start_time">서비스 시작 시간 </string>
     <string name="main_start_msg">서비스를\n실행해주세요. </string>
@@ -47,6 +68,9 @@
     <string name="main_service_on">서비스 실행</string>
     <string name="main_step_cnt">걸음 수:  </string>
     <string name="main_email_hint">받을 이메일 주소</string>
+    <string name="main_off_msg"><![CDATA[<font color="#0085FF">건강한 보행 습관,</font><br>지금 바로 시작해보세요!]]></string>
+    <string name="main_on_msg"><![CDATA[<font color="#0085FF">Smombie</font>없는 그날까지,<br>건강한 보행 중!]]></string>
+
 
     <string name="setting_title">설정</string>
     <string name="setting_email">받을 이메일 설정하기</string>
@@ -54,7 +78,27 @@
     <string name="setting_version">버전 정보</string>
 
 
-    <string name="lock_screen_view_title">스몸비 방지 실행 중</string>
+    <string name="lock_screen_view_title">보행 중이신가요?</string>
+    <string name="lock_screen_view_subtitle">스마트폰 사용을 제한합니다.</string>
+    <string name="lock_screen_view_title2">급한 일이신가요?</string>
+    <string name="lock_screen_view_subtitle2">긴급해제 기능을 사용하세요!</string>
     <string name="lock_screen_view_step_cnt">걸음 수 </string>
-    <string name="lock_screen_view_msg">걸음 멈춘 3초후 unlock </string>
+    <string name="lock_screen_view_msg">※ 긴급해제 기능 사용 시, 발걸음 수는\n계속 카운트 되니 유의하세요! </string>
+
+    <string name="version_title">버전정보</string>
+    <string name="version_msg">현재버전</string>
+
+    <string name="bug_title">버그제보</string>
+    <string name="bug_msg">서비스 사용에</string>
+    <string name="bug_msg2">문제가 있었나요?</string>
+    <string name="bug_msg3">발생한 문제를 아래 메일 또는 제보하기 버튼으로\n전달해주시면 바로 파악 및 수정하겠습니다.</string>
+    <string name="bug_email">picka.hr@gmail.com</string>
+    <string name="bug_toast">이메일이 복사되었습니다.</string>
+    <string name="bug_">※</string>
+    <string name="bug_notic1">버그 제보 메일 전송 시, 버그 제보를 위한 <font color='#0085FF'><u>개인정보 수집 ・이용</u></font>에 동의하는 것으로 간주됩니다. </string>
+    <string name="bug_notic2">제보해주신 내용에 대해 자세히 파악하기 위해 담당자가 연락을 취할 수 있습니다.</string>
+
+    <string name="menu_history">사용기록</string>
+    <string name="menu_version">버전정보</string>
+    <string name="menu_bug">버그제보</string>
 </resources>

@@ -1,24 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:gravity="center"
-    android:layout_height="match_parent">
+    android:orientation="vertical">
 
     <ImageView
-        android:id="@+id/logo"
-        android:layout_width="@dimen/dimen_70dp"
-        android:layout_height="@dimen/dimen_70dp"
-        android:src="@drawable/smombie_logo"
-        android:scaleType="centerCrop" />
-
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/app_name"
-        style="@style/Font_16_3D3D3D"
-        android:layout_marginTop="@dimen/dimen_05dp"
-        android:paddingBottom="@dimen/dimen_50dp"/>
+        android:src="@drawable/logo_sp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dimen_70dp"
+        android:src="@drawable/logo_txt" />
+
 
 </LinearLayout>

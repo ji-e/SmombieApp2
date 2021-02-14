@@ -41,7 +41,7 @@ class PermissionActivity : BaseActivity() {
     private fun initView() {
         binding.permissionBtnConfirm.setOnClickListener { setPermission() }
         binding.permissionBtnClose.setOnClickListener { exitApp() }
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             binding.msg4.visibility = View.GONE
             binding.msg41.visibility = View.GONE
         }

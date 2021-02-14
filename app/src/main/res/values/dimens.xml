@@ -57,6 +57,7 @@
 
     <dimen name="dimen_51dp">51dp</dimen>
     <dimen name="dimen_52dp">52dp</dimen>
+    <dimen name="dimen_54dp">54dp</dimen>
     <dimen name="dimen_55dp">55dp</dimen>
     <dimen name="dimen_56dp">56dp</dimen>
     <dimen name="dimen_60dp">60dp</dimen>
@@ -65,12 +66,15 @@
     <dimen name="dimen_66dp">66dp</dimen>
     <dimen name="dimen_70dp">70dp</dimen>
 
+    <dimen name="dimen_72dp">72dp</dimen>
     <dimen name="dimen_74dp">74dp</dimen>
     <dimen name="dimen_75dp">75dp</dimen>
     <dimen name="dimen_80dp">80dp</dimen>
 
-    <dimen name="dimen_86dp">86dp</dimen>
     <dimen name="dimen_84dp">84dp</dimen>
+    <dimen name="dimen_86dp">86dp</dimen>
+    <dimen name="dimen_87dp">87dp</dimen>
+    <dimen name="dimen_88dp">88dp</dimen>
     <dimen name="dimen_90dp">90dp</dimen>
 
     <dimen name="dimen_100dp">100dp</dimen>
@@ -92,8 +96,10 @@
     <dimen name="dimen_150dp">150dp</dimen>
 
     <dimen name="dimen_155dp">155dp</dimen>
+    <dimen name="dimen_160dp">160dp</dimen>
 
     <dimen name="dimen_174dp">174dp</dimen>
+    <dimen name="dimen_180dp">180dp</dimen>
 
     <dimen name="dimen_190dp">190dp</dimen>
 
@@ -101,10 +107,18 @@
     <dimen name="dimen_195dp">195dp</dimen>
     <dimen name="dimen_200dp">200dp</dimen>
 
+    <dimen name="dimen_210dp">210dp</dimen>
+
+    <dimen name="dimen_220dp">220dp</dimen>
+
     <dimen name="dimen_224dp">224dp</dimen>
     <dimen name="dimen_226dp">226dp</dimen>
     <dimen name="dimen_230dp">230dp</dimen>
 
+    <dimen name="dimen_231dp">231dp</dimen>
+    <dimen name="dimen_232dp">232dp</dimen>
+    <dimen name="dimen_233dp">233dp</dimen>
+    <dimen name="dimen_234dp">234dp</dimen>
     <dimen name="dimen_240dp">240dp</dimen>
 
     <dimen name="dimen_250dp">250dp</dimen>
@@ -125,4 +139,10 @@
     <dimen name="dimen_396dp">396dp</dimen>
 
     <dimen name="dimen_400dp">400dp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="nav_header_vertical_spacing">8dp</dimen>
+    <dimen name="nav_header_height">176dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 </resources>

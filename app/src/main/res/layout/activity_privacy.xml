@@ -6,39 +6,42 @@
     android:layout_height="match_parent"
     tools:context=".view.intro.PrivacyActivity">
 
+    <TextView
+        android:id="@+id/privacy_tv_title"
+        style="@style/Font_18_primaryBlack"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_56dp"
+        android:gravity="center"
+        android:text="@string/privacy_title"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/privacy_btn_close"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dimen_16dp"
-        android:layout_marginTop="@dimen/dimen_16dp"
-        android:src="@drawable/btn_top_close_black"
+        android:layout_marginEnd="@dimen/dimen_20dp"
+        android:src="@drawable/btn_close"
+        app:layout_constraintBottom_toBottomOf="@id/privacy_tv_title"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/privacy_tv_title" />
 
-    <TextView
-        android:id="@+id/privacy_tv_title"
-        style="@style/Font_20_000000"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_65dp"
-        android:gravity="center"
-        android:text="@string/privacy_title"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <WebView
         android:id="@+id/privacy_webview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/dimen_10dp"
         app:layout_constraintBottom_toTopOf="@id/privacy_btn_agree"
         app:layout_constraintTop_toBottomOf="@id/privacy_tv_title" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/privacy_btn_agree"
-        style="@style/Font_16_FFFFFF"
+        style="@style/btn_r50_primary_blue"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_60dp"
-        android:background="@color/color_primary"
-        android:foreground="?attr/selectableItemBackground"
+        android:layout_height="@dimen/dimen_50dp"
+        android:layout_marginHorizontal="@dimen/dimen_20dp"
+        android:layout_marginBottom="@dimen/dimen_40dp"
+        android:background="@drawable/rectangle_r50_fill_primary_blue"
         android:text="@string/btn_agree"
         app:layout_constraintBottom_toBottomOf="parent" />
 

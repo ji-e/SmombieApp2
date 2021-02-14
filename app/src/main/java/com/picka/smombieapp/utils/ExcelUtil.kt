@@ -67,7 +67,7 @@ class ExcelUtil {
                 setFont(headerFont)
             }
             val row = sheet.createRow(0)
-            val columns = arrayOf("", "서비스 시작 시간", "서비스 종료 시간", "서비스 실행 시간", "서비스 실행 중 걸음 수")
+            val columns = arrayOf("", "서비스 시작 날짜", "서비스 시작 시간", "서비스 종료 시간", "서비스 실행 시간", "서비스 실행 중 걸음 수")
 
             for (i in columns.indices) {
                 val cell = row.createCell(i)

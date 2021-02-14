@@ -6,9 +6,9 @@
 
     <TextView
         android:id="@+id/permission_tv_title"
-        style="@style/Font_20_000000"
+        style="@style/Font_18_primaryBlack"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_65dp"
+        android:layout_height="@dimen/dimen_56dp"
         android:gravity="center"
         android:text="@string/permission_title"
         app:layout_constraintTop_toTopOf="parent" />
@@ -17,11 +17,11 @@
         android:id="@+id/permission_btn_close"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimen_16dp"
-        android:layout_marginEnd="@dimen/dimen_16dp"
-        android:src="@drawable/btn_top_close_black"
+        android:layout_marginEnd="@dimen/dimen_20dp"
+        android:src="@drawable/btn_close"
+        app:layout_constraintBottom_toBottomOf="@id/permission_tv_title"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/permission_tv_title" />
 
 
     <LinearLayout
@@ -32,77 +32,98 @@
         app:layout_constraintBottom_toTopOf="@id/permission_btn_confirm"
         app:layout_constraintTop_toBottomOf="@id/permission_tv_title">
 
+
         <TextView
-            style="@style/Font_16_000000"
+            style="@style/Font_16_primaryBlack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/icon_check"
+            android:drawablePadding="@dimen/dimen_12dp"
             android:text="@string/permission_msg1" />
 
         <TextView
-            style="@style/Font_14_3D3D3D"
+            style="@style/Font_14_mediumDark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dimen_11dp"
-            android:layout_marginTop="@dimen/dimen_10dp"
-            android:layout_marginBottom="@dimen/dimen_30dp"
+            android:layout_marginStart="@dimen/dimen_32dp"
+            android:layout_marginTop="@dimen/dimen_05dp"
+            android:layout_marginBottom="@dimen/dimen_20dp"
             android:text="@string/permission_msg1_1" />
 
         <TextView
-            style="@style/Font_16_000000"
+            style="@style/Font_16_primaryBlack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/icon_check"
+            android:drawablePadding="@dimen/dimen_12dp"
             android:text="@string/permission_msg2" />
 
         <TextView
-            style="@style/Font_14_3D3D3D"
+            style="@style/Font_14_mediumDark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dimen_11dp"
-            android:layout_marginTop="@dimen/dimen_10dp"
-            android:layout_marginBottom="@dimen/dimen_30dp"
+            android:layout_marginStart="@dimen/dimen_32dp"
+            android:layout_marginTop="@dimen/dimen_05dp"
+            android:layout_marginBottom="@dimen/dimen_20dp"
             android:text="@string/permission_msg2_1" />
 
         <TextView
-            style="@style/Font_16_000000"
+            style="@style/Font_16_primaryBlack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/icon_check"
+            android:drawablePadding="@dimen/dimen_12dp"
             android:text="@string/permission_msg3" />
 
         <TextView
-            style="@style/Font_14_3D3D3D"
+            style="@style/Font_14_mediumDark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dimen_11dp"
-            android:layout_marginTop="@dimen/dimen_10dp"
-            android:layout_marginBottom="@dimen/dimen_30dp"
+            android:layout_marginStart="@dimen/dimen_32dp"
+            android:layout_marginTop="@dimen/dimen_05dp"
+            android:layout_marginBottom="@dimen/dimen_20dp"
             android:text="@string/permission_msg3_1" />
 
         <TextView
-           android:id="@+id/msg4"
-            style="@style/Font_16_000000"
+            android:id="@+id/msg4"
+            style="@style/Font_16_primaryBlack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/icon_check"
+            android:drawablePadding="@dimen/dimen_12dp"
             android:text="@string/permission_msg4" />
 
         <TextView
             android:id="@+id/msg41"
-            style="@style/Font_14_3D3D3D"
+            style="@style/Font_14_mediumDark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dimen_11dp"
-            android:layout_marginTop="@dimen/dimen_10dp"
-            android:layout_marginBottom="@dimen/dimen_30dp"
+            android:layout_marginStart="@dimen/dimen_32dp"
+            android:layout_marginTop="@dimen/dimen_05dp"
+            android:layout_marginBottom="@dimen/dimen_20dp"
             android:text="@string/permission_msg4_1" />
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Font_14_medium"
+            android:text="@string/permission_notic"/>
 
     </LinearLayout>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/permission_btn_confirm"
-        style="@style/Font_16_FFFFFF"
+        style="@style/btn_r50_primary_blue"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_60dp"
-        android:background="@color/color_primary"
-        android:foreground="?attr/selectableItemBackground"
+        android:layout_height="@dimen/dimen_50dp"
+        android:layout_marginHorizontal="@dimen/dimen_20dp"
+        android:layout_marginBottom="@dimen/dimen_40dp"
+        android:background="@drawable/rectangle_r50_fill_primary_blue"
         android:text="@string/btn_confirm"
         app:layout_constraintBottom_toBottomOf="parent" />
 

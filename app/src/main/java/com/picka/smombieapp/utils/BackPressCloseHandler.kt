@@ -2,6 +2,7 @@ package com.picka.smombieapp.utils
 
 import android.app.Activity
 import android.content.Context
+import android.widget.Toast
 import com.picka.smombieapp.R
 
 /**
@@ -12,15 +13,12 @@ import com.picka.smombieapp.R
  */
 class BackPressCloseHandler(private val mContext: Context) {
     private var backKeyPressedTime: Long = 0
-    private val toast by lazy {
-        CustomToast(mContext).makeToast(mContext.getString(R.string.exit_msg))
-    }
 
     fun onBackPressed() {
         // 한번 눌렀을 때
         if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
             backKeyPressedTime = System.currentTimeMillis()
-            toast.show()
+            Toast.makeText(mContext, mContext.getString(R.string.exit_msg), Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -28,7 +26,7 @@ class BackPressCloseHandler(private val mContext: Context) {
         if (System.currentTimeMillis() <= backKeyPressedTime + 2000) {
             (mContext as Activity).finishAffinity()
 //            android.os.Process.killProcess(android.os.Process.myPid())
-            toast.cancel()
+
         }
 
     }

@@ -6,16 +6,17 @@ import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.content.pm.PackageManager
-import android.graphics.drawable.ShapeDrawable
-import android.graphics.drawable.shapes.OvalShape
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.os.PowerManager
 import android.provider.Settings
+import android.text.Html
 import android.view.View
+import android.view.animation.AnimationUtils
 import androidx.core.content.ContextCompat
 import androidx.core.database.getStringOrNull
+import androidx.core.view.GravityCompat
 import com.picka.smombieapp.R
 import com.picka.smombieapp.base.BaseActivity
 import com.picka.smombieapp.base.BaseApplication
@@ -24,9 +25,12 @@ import com.picka.smombieapp.service.StepCallback
 import com.picka.smombieapp.service.StepService
 import com.picka.smombieapp.utils.*
 import com.picka.smombieapp.view.dialog.CustomDialog
-import com.picka.smombieapp.view.log.LogActivity
+import com.picka.smombieapp.view.dialog.CustomServiceEndDialog
+import com.picka.smombieapp.view.dialog.CustomServiceEndListener
+import com.picka.smombieapp.view.history.HistoryActivity
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import kotlin.collections.ArrayList
 import kotlin.math.abs
 
 
@@ -66,13 +70,14 @@ class MainActivity : BaseActivity(), View.OnClickListener {
             if (!StepService.isService) {
                 binding.mainSwService.isChecked = false
                 setServiceState("END")
+                showCircle("END")
                 return
             }
             val sb = service as StepService.StepBinder
             stepService = sb.service
             stepService?.setCallback(stepCallback)
-            binding.mainTvStartTime.text = StepService.startServiceTime
             dataResetCheck()
+            showServiceStartTime()
         }
     }
 
@@ -89,16 +94,18 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     override fun onResume() {
         super.onResume()
         LogUtil.e("SERVICE_STATE", StepService.isService)
+        binding.mainDrawer.closeDrawer((GravityCompat.END))
         permissionCheck()
         stepServiceIntent = Intent(this, StepService::class.java)
 
         if (StepService.isService) {
             binding.mainSwService.isChecked = true
-            binding.mainTvStartTime.text = StepService.startServiceTime
+            showCircle("START")
         } else {
             if (BaseApplication.useSharedPreference.getPreferencesData(Constants.IS_STEP_SERVICE) == "Y") {
                 binding.mainSwService.isChecked = true
-                binding.mainTvStartTime.text = StepService.startServiceTime
+            } else {
+                showCircle("END")
             }
         }
     }
@@ -109,69 +116,39 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         when (v) {
-            binding.mainBtnLog -> startActivity(Intent(this, LogActivity::class.java))
-            binding.mainBtnEmail -> {
-                val email = BaseApplication.useSharedPreference.getPreferencesData(Constants.EXCEL_EMAIL)
-                if (email.isEmpty()) {
-                    showEmailDialog()
-                } else {
-                    makeExcel()
-                }
-            }
-            binding.mainBtnBug -> {
-                val address = arrayOf(Constants.BUG_EMAIL)
-                EmailUtil().sendEmailToAdmin(this, getString(R.string.btn_bug), address)
-            }
-            binding.mainImgSetting -> {
-                startActivity(Intent(this, SettingActivity::class.java))
-            }
+            binding.mainLayMenu.menuBtnClose ->  binding.mainDrawer.closeDrawer((GravityCompat.END))
+            binding.mainLayMenu.menuTvHistroy -> startActivity(Intent(this, HistoryActivity::class.java))
+            binding.mainLayMenu.menuTvBug -> startActivity(Intent(this, BugActivity::class.java))
+            binding.mainLayMenu.menuLayVersion -> startActivity(Intent(this, VersionActivity::class.java))
+            binding.mainBtnMenu -> binding.mainDrawer.openDrawer((GravityCompat.END))
         }
     }
 
     private fun initView() {
-        binding.mainImgSetting.setOnClickListener(this)
-        binding.mainBtnLog.setOnClickListener(this)
-        binding.mainBtnBug.setOnClickListener(this)
-        binding.mainBtnEmail.setOnClickListener(this)
-//        binding.mainEtEmail.addTextChangedListener(
-//                object : TextWatcher {
-//                    override fun afterTextChanged(s: Editable?) {
-//
-//                    }
-//
-//                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-//
-//                    }
-//
-//                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//                        binding.mainBtnEmail.isEnabled = !s.isNullOrEmpty()
-//                    }
-//
-//                }
-//        )
+        binding.mainBtnMenu.setOnClickListener(this)
+        binding.mainLayMenu.menuTvHistroy.setOnClickListener(this)
+        binding.mainLayMenu.menuTvBug.setOnClickListener(this)
+        binding.mainLayMenu.menuBtnClose.setOnClickListener(this)
+        binding.mainLayMenu.menuLayVersion.setOnClickListener(this)
+
         binding.mainSwService.setOnCheckedChangeListener { buttonView, isChecked ->
             try {
                 if (stepServiceIntent != null) {
                     if (isChecked && !StepService.isService) {
                         LogUtil.e("SERVICE_START")
                         setServiceState("START")
+                        showCircle("START")
                     } else if (!isChecked && StepService.isService) {
                         LogUtil.e("SERVICE_END")
                         showEndServiceDialog()
                     }
+
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
                 LogUtil.e(e)
             }
         }
-
-        val color = ContextCompat.getColor(this, R.color.color_FFFFFF)
-        binding.mainImgSetting.setColorFilter(color)
-        binding.mainImgLogo.background = ShapeDrawable(OvalShape())
-        binding.mainImgLogo.clipToOutline = true
-
-
     }
 
     /** 권한체크 */
@@ -210,7 +187,6 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 
     }
 
-
     /** 2주 후 데이터 초기화*/
     private fun dataResetCheck() {
         try {
@@ -245,28 +221,21 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         }
     }
 
-
     /** Smombie 종료 방지 팝업 */
     private fun showEndServiceDialog() {
-        val customDialog = CustomDialog(this).apply {
-            setBottomDialog(
-                getString(R.string.dialog_title),
-                getString(R.string.dialog_end_service_content),
-                null,
-                getString(R.string.btn_cancel),
-                View.OnClickListener {
-                    dismiss()
-                    binding.mainSwService.isChecked = true
-                },
-                getString(R.string.btn_confirm),
-                View.OnClickListener {
-                    dismiss()
-                    setServiceState("END")
-                }
+        val customServiceEndListener = object : CustomServiceEndListener{
+            override fun onServiceEndClick() {
+                setServiceState("END")
+                showCircle("END")
+            }
 
-            )
+            override fun onCloseClick() {
+                binding.mainSwService.isChecked = true
+            }
+
         }
-        customDialog.show()
+        val customServiceEndDialog = CustomServiceEndDialog(this, customServiceEndListener)
+        customServiceEndDialog.show()
     }
 
     /** 권한설정 팝업 */
@@ -287,27 +256,10 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         customDialog.show()
     }
 
-    /** 이메일로 내보내기 팝업 */
-    private fun showEmailDialog() {
-        val customDialog = CustomDialog(this).apply {
-            setBottomDialog(
-                getString(R.string.dialog_title),
-                getString(R.string.dialog_email_content2),
-                null,
-                getString(R.string.btn_confirm),
-                View.OnClickListener {
-                    dismiss()
-                }
-
-            )
-        }
-        customDialog.show()
-    }
-
     /** Smombie 서비스 상태 설정 */
-    private fun setServiceState(state: String) {
+    private fun setServiceState(isState: String) {
         try {
-            if (state == "START") {
+            if (isState == "START") {
                 startService(stepServiceIntent)
                 bindService(stepServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
             } else {
@@ -315,41 +267,59 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                 unbindService(serviceConnection)
             }
         } catch (e: Exception) {
-            LogUtil.e(state, e)
+            LogUtil.e(isState, e)
         } catch (e: IllegalArgumentException) {
-            LogUtil.e(state, e)
+            LogUtil.e(isState, e)
         }
     }
 
-
-    /** 엑셀파일 생성 완료*/
-    private var excelCallback = object : ExcelCallback {
-        override fun onClose() {
-            CustomLoading.hideLoadingBar()
-            val email =
-                BaseApplication.useSharedPreference.getPreferencesData(Constants.EXCEL_EMAIL)
-            val address = arrayOf(email)
-            EmailUtil().sendEmailExcel(this@MainActivity, getString(R.string.btn_email), address)
-        }
-    }
-
-    /** 엑셀파일 생성 */
-    private fun makeExcel() {
-
-        CustomLoading.showLoadingBar(this@MainActivity)
-        val cursor = getLogCursor()
-        Thread {
-            run {
-                val excel = ExcelUtil()
-
-                excel.setExcelCallback(excelCallback)
-                excel.makeExcelFile(cursor)
-
+    private fun showCircle(isState: String) {
+        val isVisible: Int
+        if (isState == "START") {
+            isVisible = View.VISIBLE
+            val animation = AnimationUtils.loadAnimation(applicationContext, R.anim.progress_circle)
+            binding.mainProgress.startAnimation(animation)
+            binding.mainImgInnerCircle.setBackgroundResource(R.drawable.img_circle2)
+            binding.mainImgLogo.setBackgroundResource(R.drawable.logo_on)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                binding.mainTvMsg.text = Html.fromHtml(getString(R.string.main_on_msg), Html.FROM_HTML_MODE_LEGACY)
+            } else {
+                binding.mainTvMsg.text = Html.fromHtml(getString(R.string.main_on_msg))
             }
-        }.start()
-
+            showServiceStartTime()
+        } else {
+            isVisible = View.INVISIBLE
+            binding.mainProgress.clearAnimation()
+            binding.mainImgInnerCircle.setBackgroundResource(R.drawable.img_circle)
+            binding.mainImgLogo.setBackgroundResource(R.drawable.logo_off)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                binding.mainTvMsg.text = Html.fromHtml(getString(R.string.main_off_msg), Html.FROM_HTML_MODE_LEGACY)
+            } else {
+                binding.mainTvMsg.text = Html.fromHtml(getString(R.string.main_off_msg))
+            }
+        }
+        binding.mainTxtStartTime.visibility = isVisible
+        binding.mainLayStartTime.visibility = isVisible
+        binding.mainProgress.visibility = isVisible
+        binding.mainImgOutCircle.visibility = isVisible
     }
 
+    private fun showServiceStartTime(){
+        val start  = StepService.startServiceTime
+        if(start.length <14) return
+        val M = start.substring(4,6)
+        val D = start.subSequence(6,8)
+        var h = start.substring(9,11)
+        val m = start.substring(12,14)
+        val dateP:String
+        if (h.toInt() >= 12) {
+            h = (h.toInt() - 12).toString()
+            dateP = getString(R.string.history_pm)
+        } else {
+            dateP = getString(R.string.history_am)
+        }
+        binding.mainTvStartTime.text = "$dateP ${h}시 ${m}분, ${M}월 ${D}일"
+    }
 
     inner class UncaughtException : Thread.UncaughtExceptionHandler {
         override fun uncaughtException(t: Thread, e: Throwable) {
@@ -357,6 +327,5 @@ class MainActivity : BaseActivity(), View.OnClickListener {
             setServiceState("END")
         }
     }
-
 
 }

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/dimen_20dp"
+    android:background="@drawable/rectangle_dialog"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingHorizontal="@dimen/dimen_20dp">
+
+    <ImageView
+        android:id="@+id/dialog_history_info_btn_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginTop="@dimen/dimen_20dp"
+        android:src="@drawable/btn_close" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginBottom="@dimen/dimen_20dp"
+        android:src="@drawable/img_circle_warning" />
+
+    <TextView
+        style="@style/Font_18_primaryBlack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginBottom="@dimen/dimen_20dp"
+        android:text="@string/dialog_history_content"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dimen_15dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/permission_btn_confirm"
+        app:layout_constraintTop_toBottomOf="@id/permission_tv_title">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_05dp"
+            android:src="@drawable/icon_check" />
+
+        <TextView
+            style="@style/Font_16_mediumDark"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dimen_05dp"
+            android:layout_weight="1"
+            android:text="@string/dialog_history_content2" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/permission_btn_confirm"
+        app:layout_constraintTop_toBottomOf="@id/permission_tv_title">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_05dp"
+            android:src="@drawable/icon_check" />
+
+        <TextView
+            style="@style/Font_16_mediumDark"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dimen_05dp"
+            android:layout_weight="1"
+            android:text="@string/dialog_history_content3" />
+    </LinearLayout>
+</LinearLayout>

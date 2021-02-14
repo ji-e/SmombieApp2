@@ -16,7 +16,7 @@
 
         <TextView
             android:id="@+id/dialog_tv_title"
-            style="@style/Font_18_000000"
+            style="@style/Font_16_primaryBlack"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dimen_60dp"
             android:gravity="center"
@@ -35,7 +35,7 @@
 
         <TextView
             android:id="@+id/dialog_tvContent"
-            style="@style/Font_16_000000"
+            style="@style/Font_16_primaryBlack"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="@dimen/dimen_60dp"
@@ -50,7 +50,7 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/dialog_btnNo"
-            style="@style/Font_16_000000"
+            style="@style/Font_16_primaryBlack"
             android:layout_width="0dp"
             android:layout_height="@dimen/dimen_60dp"
             android:background="@color/color_DEDEDE"
@@ -61,10 +61,10 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/dialog_btnYes"
-            style="@style/Font_16_FFFFFF"
+            style="@style/Font_16_primary_white"
             android:layout_width="0dp"
             android:layout_height="@dimen/dimen_60dp"
-            android:background="@color/color_primary"
+            android:background="@color/color_primary_blue"
             android:backgroundTint="@null"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

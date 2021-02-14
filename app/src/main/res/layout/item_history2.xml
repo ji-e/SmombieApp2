@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/dimen_08dp"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:paddingTop="@dimen/dimen_05dp">
+
+    <TextView
+        android:id="@+id/item_history_tv_start"
+        style="@style/Font_14_mediumDark"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        tools:text="09:00" />
+
+    <TextView
+        android:id="@+id/item_history_tv_end"
+        style="@style/Font_14_mediumDark"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        tools:text="18:20" />
+
+    <TextView
+        android:id="@+id/item_history_tv_time"
+        style="@style/Font_14_primaryBlue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.5"
+        tools:text="9시간 20분" />
+
+    <TextView
+        android:id="@+id/item_history_tv_step"
+        style="@style/Font_14_mediumDark"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.7"
+        android:textAlignment="textEnd"
+        tools:text="12" />
+</LinearLayout>

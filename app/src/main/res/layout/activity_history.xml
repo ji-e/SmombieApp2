@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.history.HistoryActivity">
+
+    <TextView
+        android:id="@+id/history_tv_title"
+        style="@style/Font_18_primaryBlack"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_56dp"
+        android:gravity="center"
+        android:text="@string/history_title"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/history_btn_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dimen_20dp"
+        android:src="@drawable/btn_arrow_left"
+        app:layout_constraintBottom_toBottomOf="@id/history_tv_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/history_tv_title" />
+
+    <ImageView
+        android:id="@+id/history_btn_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dimen_20dp"
+        android:src="@drawable/img_circle_information"
+        app:layout_constraintBottom_toBottomOf="@id/history_tv_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/history_tv_title" />
+
+    <LinearLayout
+        android:id="@+id/history_lay_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dimen_50dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="gone">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_18dp"
+            android:src="@drawable/img_circle_warning" />
+
+        <TextView
+            style="@style/Font_24_primaryBlack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/history_empty"
+            android:textAlignment="center" />
+    </LinearLayout>
+
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/history_swipe"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingHorizontal="@dimen/dimen_20dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/history_tv_title"
+        tools:visibility="visible">
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/history_lay_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/Font_24_primaryBlue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_70dp"
+                    android:text="@string/history_period" />
+
+                <TextView
+                    android:id="@+id/history_tv_date"
+                    style="@style/Font_24_primaryBlack"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_03dp"
+                    tools:text="0201.02.11~2021.02.20" />
+
+                <TextView
+                    android:id="@+id/history_tv_update"
+                    style="@style/Font_14_medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_10dp"
+                    tools:text="오전 02:56, 오늘 업데이트" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/history_btn_send"
+                    style="@style/btn_r50_primary_blue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dimen_50dp"
+                    android:layout_marginTop="@dimen/dimen_36dp"
+                    android:background="@drawable/rectangle_r50_fill_primary_blue"
+                    android:paddingHorizontal="@dimen/dimen_25dp"
+                    android:text="@string/btn_email"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/log_recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_60dp"
+                    tools:listitem="@layout/item_history" />
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
