@@ -10,6 +10,13 @@ open class BaseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
         super.onCreate(savedInstanceState, persistentState)
         Thread.setDefaultUncaughtExceptionHandler(UncaughtException())
+
+        overridePendingTransition(0, 0)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        overridePendingTransition(0, 0)
     }
 
 

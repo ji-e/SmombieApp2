@@ -55,10 +55,10 @@ class HistoryAdapter(
                 }
             }
             if (holder.time.text.toString() == "-") {
-                endCnt--
+                holder.endCnt.text = "-"
+            } else {
+                holder.endCnt.text = "${endCnt}회"
             }
-
-            holder.endCnt.text = "${endCnt}회"
 
             holder.recyclerView.layoutManager = LinearLayoutManager(mContext)
             holder.recyclerView.adapter = HistoryAdapter2(sublist)
