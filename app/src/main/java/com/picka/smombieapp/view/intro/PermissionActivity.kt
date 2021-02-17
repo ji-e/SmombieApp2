@@ -10,7 +10,6 @@ import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
 import android.view.View
-import android.webkit.WebSettings
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.picka.smombieapp.base.BaseActivity
@@ -23,7 +22,7 @@ import com.picka.smombieapp.view.MainActivity
 /**
  * create by jieun
  */
-class PermissionActivity : BaseActivity() {
+class PermissionActivity : BaseActivity(), View.OnClickListener {
     private lateinit var binding: ActivityPermissionBinding
     private var permissionList = ArrayList<String>()
 
@@ -39,8 +38,9 @@ class PermissionActivity : BaseActivity() {
     }
 
     private fun initView() {
-        binding.permissionBtnConfirm.setOnClickListener { setPermission() }
-        binding.permissionBtnClose.setOnClickListener { exitApp() }
+        binding.permissionBtnConfirm.setOnClickListener(this)
+        binding.permissionBtnClose.setOnClickListener(this)
+
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             binding.msg4.visibility = View.GONE
             binding.msg41.visibility = View.GONE
@@ -48,10 +48,19 @@ class PermissionActivity : BaseActivity() {
 
     }
 
+    override fun onClick(v: View?) {
+        if (!onSingleClick()) return
+
+        when (v) {
+            binding.permissionBtnConfirm -> setPermission()
+            binding.permissionBtnClose -> exitApp()
+        }
+    }
+
     override fun onRequestPermissionsResult(
-            requestCode: Int,
-            permissions: Array<out String>,
-            grantResults: IntArray
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == Constants.CHECK_PERMISSION) {
@@ -84,9 +93,9 @@ class PermissionActivity : BaseActivity() {
         } else if (!pm.isIgnoringBatteryOptimizations(packageName)) {
             setIgnoreBattery()
         } else {
-            if(BaseApplication.useSharedPreference.getPreferencesData(Constants.IS_PRIVACY) != "Y"){
+            if (BaseApplication.useSharedPreference.getPreferencesData(Constants.IS_PRIVACY) != "Y") {
                 startActivity(Intent(this, PrivacyActivity::class.java))
-            }else {
+            } else {
                 startActivity(Intent(this, MainActivity::class.java))
             }
             finish()
@@ -102,20 +111,20 @@ class PermissionActivity : BaseActivity() {
     /** 권한체크 */
     private fun permissionCheck() {
         val permission: Array<String> =
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                    arrayOf(
-                            Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                arrayOf(
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
 //                            Manifest.permission.READ_PHONE_STATE
-                    )
-                } else {
-                    arrayOf(
-                            Manifest.permission.ACTIVITY_RECOGNITION,
-                            Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                )
+            } else {
+                arrayOf(
+                    Manifest.permission.ACTIVITY_RECOGNITION,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
 //                            Manifest.permission.READ_PHONE_STATE
-                    )
-                }
+                )
+            }
 
         for (i in permission.indices) {
             val permissionCheck = ContextCompat.checkSelfPermission(this, permission[i])
@@ -145,9 +154,9 @@ class PermissionActivity : BaseActivity() {
             }
 
             ActivityCompat.requestPermissions(
-                    this,
-                    permissionArr,
-                    Constants.CHECK_PERMISSION
+                this,
+                permissionArr,
+                Constants.CHECK_PERMISSION
             )
         } else {
             permissionOnSuccess()

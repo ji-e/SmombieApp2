@@ -1,22 +1,57 @@
 package com.picka.smombieapp.view
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.picka.smombieapp.BuildConfig
 import com.picka.smombieapp.R
-import com.picka.smombieapp.databinding.ActivityMainBinding
+import com.picka.smombieapp.base.BaseActivity
 import com.picka.smombieapp.databinding.ActivityVersionBinding
+import com.picka.smombieapp.utils.LogUtil
+import org.jsoup.Jsoup
+import java.io.IOException
 
-class VersionActivity : AppCompatActivity() {
+class VersionActivity : BaseActivity() {
     private lateinit var binding: ActivityVersionBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityVersionBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.versionTv.text =  getString(R.string.version_msg) + " ${BuildConfig.VERSION_NAME}"
+        initView()
+        getVersion()
+    }
+
+    private fun initView(){
+        binding.versionTvVer.text = getString(R.string.version_current) + " ${BuildConfig.VERSION_NAME}"
         binding.versionBtnBack.setOnClickListener {
-            onBackPressed()
+            if (onSingleClick()) {
+                onBackPressed()
+            }
+        }
+    }
+
+    /** 버전체크 */
+    private fun getVersion() {
+        val thisVer = (BuildConfig.VERSION_NAME).replace(".", "")
+        var marketVer = "0"
+        try {
+            Thread {
+                val doc = Jsoup.connect("https://play.google.com/store/apps/details?id=" + "com.picka.smombieapp").get()
+                val ver = doc.select(".htlgb").eq(6)
+                for (mElement in ver) {
+                    runOnUiThread {
+                        marketVer = (mElement.text().trim()).replace(".", "")
+                        val strVer =
+                            if (thisVer.toInt() < marketVer.toInt()) {
+                                getString(R.string.version_msg2)
+                            } else {
+                                getString(R.string.version_msg)
+                            }
+                        binding.versionTvMsg.text = strVer
+                    }
+                }
+            }.start()
+        } catch (e: IOException) {
+            LogUtil.e(e)
         }
 
     }

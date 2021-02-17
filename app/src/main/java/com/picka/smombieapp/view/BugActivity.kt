@@ -1,6 +1,5 @@
 package com.picka.smombieapp.view
 
-import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -8,14 +7,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import com.picka.smombieapp.R
+import com.picka.smombieapp.base.BaseActivity
 import com.picka.smombieapp.databinding.ActivityBugBinding
 import com.picka.smombieapp.utils.Constants
 import com.picka.smombieapp.utils.EmailUtil
 import com.picka.smombieapp.view.intro.PrivacyActivity
 
-class BugActivity : AppCompatActivity(), View.OnClickListener {
+class BugActivity : BaseActivity(), View.OnClickListener {
     lateinit var binding: ActivityBugBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +40,8 @@ class BugActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
+        if (!onSingleClick()) return
+
         when (v) {
             binding.bugBtnBack -> onBackPressed()
             binding.bugTvEmail -> copyEmail()

@@ -1,7 +1,6 @@
 package com.picka.smombieapp.view.intro
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.webkit.WebSettings
@@ -12,7 +11,7 @@ import com.picka.smombieapp.utils.Constants
 import com.picka.smombieapp.utils.LogUtil
 import com.picka.smombieapp.view.MainActivity
 
-class PrivacyActivity : BaseActivity() {
+class PrivacyActivity : BaseActivity(), View.OnClickListener {
     lateinit var binding: ActivityPrivacyBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,16 +47,22 @@ class PrivacyActivity : BaseActivity() {
 
         mWebView.loadUrl(Constants.PRIVACY_URL)
 
-        binding.privacyBtnAgree.setOnClickListener {
-            BaseApplication.useSharedPreference.setPreferencesData(Constants.IS_PRIVACY, "Y")
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
-        }
-        binding.privacyBtnClose.setOnClickListener {
-            onBackPressed()
-        }
+        binding.privacyBtnAgree.setOnClickListener(this)
+        binding.privacyBtnClose.setOnClickListener(this)
     }
 
+    override fun onClick(v: View?) {
+        if (!onSingleClick()) return
+
+        when (v) {
+            binding.privacyBtnClose -> onBackPressed()
+            binding.privacyBtnAgree -> {
+                BaseApplication.useSharedPreference.setPreferencesData(Constants.IS_PRIVACY, "Y")
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
+            }
+        }
+    }
 
     inner class UncaughtException : Thread.UncaughtExceptionHandler {
         override fun uncaughtException(t: Thread, e: Throwable) {

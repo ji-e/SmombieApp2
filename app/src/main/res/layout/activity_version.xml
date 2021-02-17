@@ -38,14 +38,23 @@
             android:layout_height="@dimen/dimen_60dp"
             android:src="@drawable/logo_on" />
 
+
         <TextView
-            android:id="@+id/version_tv"
+            android:id="@+id/version_tv_msg"
+            style="@style/Font_16_primaryBlack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_20dp"
+            android:text="@string/version_msg" />
+
+        <TextView
+            android:id="@+id/version_tv_ver"
             style="@style/Font_14_mediumDark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dimen_10dp"
-            android:layout_marginBottom="@dimen/dimen_80dp"
-            android:text="@string/version_msg" />
+            android:layout_marginBottom="@dimen/dimen_90dp"
+            android:text="@string/version_current" />
 
 
     </LinearLayout>

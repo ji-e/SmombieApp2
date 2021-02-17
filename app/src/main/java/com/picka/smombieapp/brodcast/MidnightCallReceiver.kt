@@ -1,5 +1,6 @@
 package com.picka.smombieapp.brodcast
 
+import android.app.AlarmManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -8,6 +9,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import androidx.core.database.getStringOrNull
 import com.picka.smombieapp.R
 import com.picka.smombieapp.base.BaseApplication
 import com.picka.smombieapp.service.StepService
@@ -15,15 +17,21 @@ import com.picka.smombieapp.utils.Constants
 import com.picka.smombieapp.utils.DBHelper
 import com.picka.smombieapp.utils.LogUtil
 import com.picka.smombieapp.view.MainActivity
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.math.abs
 
 class MidnightCallReceiver : BroadcastReceiver() {
-
+    private var alarmMgr: AlarmManager? = null
     override fun onReceive(context: Context, intent: Intent) {
-        LogUtil.e("midnightCall")
-
+        LogUtil.e("midnightCallReceive")
+        alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        midnightUnregisterAlarmManager(context)
         StepService.endServiceTime = BaseApplication().getDateTime()
         endUpdate(context)
         showNotification(context)
+        midnightRegisterAlarmManager(context)
     }
 
     /** 알림창 */
@@ -77,7 +85,7 @@ class MidnightCallReceiver : BroadcastReceiver() {
             StepService.smombieStep.toInt().toString()
         )
 
-        startInsert(context)
+        dataResetCheck(context)
     }
 
     /** 시작시간 DB Insert */
@@ -89,6 +97,61 @@ class MidnightCallReceiver : BroadcastReceiver() {
             "",
             "",
             "0"
+        )
+    }
+
+    /** 2주 후 데이터 초기화*/
+    private fun dataResetCheck(context: Context) {
+        try {
+            val db = DBHelper(context)
+            val cursor = db.selectAll()
+
+            if (cursor.count > 5) {
+                cursor.moveToFirst()
+                val format = SimpleDateFormat("yyyyMMdd")
+                val firstDate = format.parse(cursor.getStringOrNull(1))
+                val currentDate = format.parse(BaseApplication().getDate())
+                val calDate = firstDate.time - currentDate.time
+                var calDateDays = calDate / (24 * 60 * 60 * 1000)
+
+                calDateDays = abs(calDateDays)
+
+                LogUtil.d(firstDate, currentDate, calDateDays)
+
+                if (calDateDays > 14) {
+                    db.onReset()
+                }
+            }
+            startInsert(context)
+        } catch (e: ParseException) {
+            LogUtil.e(e)
+        }
+    }
+
+
+    /** 자정 알람매니저 해제 */
+    private fun midnightUnregisterAlarmManager(context: Context) {
+        val alarmBroadcastReceiverIntent = Intent(context, MidnightCallReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(context, 0, alarmBroadcastReceiverIntent, 0)
+        alarmMgr?.cancel(pendingIntent)
+    }
+
+    /** 자정 알람매니저 등록 */
+    private fun midnightRegisterAlarmManager(context: Context) {
+        LogUtil.e("midnightCallRegistedAdd")
+        val alarmBroadcastReceiverIntent = Intent(context, MidnightCallReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(context, 0, alarmBroadcastReceiverIntent, 0)
+
+        val resetCal = Calendar.getInstance().apply {
+            timeInMillis = System.currentTimeMillis()
+            add(Calendar.HOUR_OF_DAY, 24)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+        }
+        alarmMgr?.setExactAndAllowWhileIdle(
+            AlarmManager.RTC_WAKEUP,
+            resetCal.timeInMillis,
+            pendingIntent
         )
     }
 }
