@@ -1,6 +1,7 @@
 package com.picka.smombieapp.service
 
 import android.app.*
+import android.app.AlarmManager.AlarmClockInfo
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -12,18 +13,26 @@ import android.hardware.SensorManager
 import android.os.*
 import android.provider.Settings
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
 import androidx.core.app.NotificationCompat
+import androidx.core.database.getStringOrNull
 import com.picka.smombieapp.R
 import com.picka.smombieapp.base.BaseApplication
-import com.picka.smombieapp.brodcast.*
+import com.picka.smombieapp.brodcast.MidnightCallReceiver
+import com.picka.smombieapp.brodcast.ScreenCallback
+import com.picka.smombieapp.brodcast.ScreenReceiver
+import com.picka.smombieapp.brodcast.SmombieReceiver
 import com.picka.smombieapp.utils.Constants
 import com.picka.smombieapp.utils.DBHelper
 import com.picka.smombieapp.utils.LogUtil
 import com.picka.smombieapp.view.MainActivity
+import java.text.ParseException
+import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.abs
 
 
 class StepService : Service(), SensorEventListener {
@@ -224,7 +233,7 @@ class StepService : Service(), SensorEventListener {
 
     /** 자정 알람매니저 등록 */
     private fun midnightRegisterAlarmManager() {
-        LogUtil.e("midnightCall")
+        LogUtil.e("midnightCallRegisted")
         val alarmBroadcastReceiverIntent = Intent(this, MidnightCallReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(this, 0, alarmBroadcastReceiverIntent, 0)
         alarmMgr = getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -278,8 +287,8 @@ class StepService : Service(), SensorEventListener {
         }
 
         startForeground(Constants.NOTIFICATION_ID, notificationBuilder.build())
-
-        startInsert()
+        dataResetCheck()
+//        startInsert()
     }
 
     /** 초기화 */
@@ -330,18 +339,22 @@ class StepService : Service(), SensorEventListener {
 
             if (wm != null && mView != null) {
                 val lockScreenBtnCall = mView!!.findViewById<TextView>(R.id.lock_btn_emergency)
-                lockScreenBtnCall.setOnClickListener {
-                    // 1분동안 잠금화면 풀기
-                    LogUtil.e("긴급해제")
-                    isLock = true
-                    countDownTimer.cancel()
-                    wm!!.removeView(mView)
-                    mView = null
-                    wm = null
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        isLock = false
-                    }, 1000 * 60)
+                lockScreenBtnCall.setOnTouchListener { v, event ->
 
+                    if(event.action == MotionEvent.ACTION_UP) {
+                        // 1분동안 잠금화면 풀기
+                        LogUtil.e("긴급해제")
+                        isLock = true
+                        countDownTimer.cancel()
+                        wm!!.removeView(mView)
+                        mView = null
+                        wm = null
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            isLock = false
+                        }, 1000 * 60)
+                    }
+
+                    true
                 }
 
                 wm?.addView(mView, params)
@@ -417,6 +430,34 @@ class StepService : Service(), SensorEventListener {
             "",
             "",
             "0")
+    }
+
+    /** 2주 후 데이터 초기화*/
+    private fun dataResetCheck() {
+        try {
+            val db = DBHelper(this)
+            val cursor = db.selectAll()
+
+            if (cursor.count > 5) {
+                cursor.moveToFirst()
+                val format = SimpleDateFormat("yyyyMMdd")
+                val firstDate = format.parse(cursor.getStringOrNull(1))
+                val currentDate = format.parse(BaseApplication().getDate())
+                val calDate = firstDate.time - currentDate.time
+                var calDateDays = calDate / (24 * 60 * 60 * 1000)
+
+                calDateDays = abs(calDateDays)
+
+                LogUtil.d(firstDate, currentDate, calDateDays)
+
+                if (calDateDays > 14) {
+                    db.onReset()
+                }
+            }
+            startInsert()
+        } catch (e: ParseException) {
+            LogUtil.e(e)
+        }
     }
 
     override fun onDestroy() {

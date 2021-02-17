@@ -17,6 +17,7 @@ import android.view.animation.AnimationUtils
 import androidx.core.content.ContextCompat
 import androidx.core.database.getStringOrNull
 import androidx.core.view.GravityCompat
+import com.picka.smombieapp.BuildConfig
 import com.picka.smombieapp.R
 import com.picka.smombieapp.base.BaseActivity
 import com.picka.smombieapp.base.BaseApplication
@@ -38,8 +39,6 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     private lateinit var binding: ActivityMainBinding
     private val backPressCloseHandler by lazy { BackPressCloseHandler(this) }
     private var stepService: StepService? = null
-
-    private val db by lazy { DBHelper(this) }
 
     private var stepServiceIntent: Intent? = null
 
@@ -76,7 +75,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
             val sb = service as StepService.StepBinder
             stepService = sb.service
             stepService?.setCallback(stepCallback)
-            dataResetCheck()
+
             showServiceStartTime()
         }
     }
@@ -133,6 +132,9 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         binding.mainLayMenu.menuBtnClose.setOnClickListener(this)
         binding.mainLayMenu.menuLayVersion.setOnClickListener(this)
 
+        binding.mainLayMenu.menuTvVersion.text = BuildConfig.VERSION_NAME
+
+
         binding.mainSwService.setOnCheckedChangeListener { buttonView, isChecked ->
             try {
                 if (stepServiceIntent != null) {
@@ -147,7 +149,6 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 
                 }
             } catch (e: Exception) {
-//                e.printStackTrace()
                 LogUtil.e(e)
             }
         }
@@ -187,40 +188,6 @@ class MainActivity : BaseActivity(), View.OnClickListener {
             showPermissionDialog()
         }
 
-    }
-
-    /** 2주 후 데이터 초기화*/
-    private fun dataResetCheck() {
-        try {
-            val cursor = getLogCursor()
-
-            if (cursor.count > 0) {
-                cursor.moveToFirst()
-                val format = SimpleDateFormat("yyyyMMdd")
-                val firstDate = format.parse(cursor.getStringOrNull(1))
-                val currentDate = format.parse(BaseApplication().getDate())
-                val calDate = firstDate.time - currentDate.time
-                var calDateDays = calDate / (24 * 60 * 60 * 1000)
-
-                calDateDays = abs(calDateDays)
-
-                LogUtil.d(firstDate, currentDate, calDateDays)
-
-                if (calDateDays > 14) {
-                    db.onReset()
-                    db.insert(
-                        StepService.startServiceDate,
-                        StepService.startServiceTime,
-                        "",
-                        "",
-                        "0"
-                    )
-                }
-            }
-
-        } catch (e: ParseException) {
-            LogUtil.e(e)
-        }
     }
 
     /** Smombie 종료 방지 팝업 */
@@ -320,7 +287,9 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     inner class UncaughtException : Thread.UncaughtExceptionHandler {
         override fun uncaughtException(t: Thread, e: Throwable) {
             LogUtil.e(t, e)
-            setServiceState("END")
+            if(StepService.isService) {
+                setServiceState("END")
+            }
         }
     }
 
