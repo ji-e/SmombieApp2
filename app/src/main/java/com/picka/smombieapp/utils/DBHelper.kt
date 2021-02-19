@@ -45,7 +45,7 @@ class DBHelper(mContext: Context) : SQLiteOpenHelper(mContext, "smombie", null, 
         val queryCreate = "create table $tableName (idx integer primary key autoincrement, date , startTime, endTime, totalTime, stepCnt)"
         db.execSQL(queryCreate)
         db.close()
-        LogUtil.d(queryDrop, queryCreate)
+        LogUtil.e(queryDrop, queryCreate)
     }
 
     /**
@@ -63,10 +63,7 @@ class DBHelper(mContext: Context) : SQLiteOpenHelper(mContext, "smombie", null, 
         }
 
         db?.insert(tableName, null, values)
-//        val queryInsert = "insert into $tableName (date, startTime, endTime, totalTime, stepCnt) values (?,?,?,?,?), ($date, \'$startTime\', \'$endTime\', '$totalTime', '$StepCnt')"
-//        db.execSQL(queryInsert)
         db.close()
-//        LogUtil.d(queryInsert)
     }
 
     /**
@@ -83,11 +80,10 @@ class DBHelper(mContext: Context) : SQLiteOpenHelper(mContext, "smombie", null, 
             put("stepCnt", stepCnt)
         }
 
-//        db?.insert(tableName, null, values)
         val queryInsert = "insert into $tableName (date, startTime, endTime, totalTime, stepCnt) values (?,?,?,?,?), ($date, \'$startTime\', \'$endTime\', '$totalTime', '$stepCnt')"
         db.execSQL(queryInsert)
         db.close()
-        LogUtil.d(queryInsert)
+        LogUtil.e(queryInsert)
     }
 
     /**
@@ -99,19 +95,7 @@ class DBHelper(mContext: Context) : SQLiteOpenHelper(mContext, "smombie", null, 
                 "set endTime =\'$endTime\', totalTime=\'$totalTime\', stepCnt='$stepCnt' " +
                 "where startTime=\'$startTime\' AND date='$date'"
         db.execSQL(queryUpdate)
-//        db.close()
-        LogUtil.d(queryUpdate)
-
-        val values = ContentValues().apply {
-            put("endTime", endTime)
-            put("totalTime", totalTime)
-            put("stepCnt", stepCnt)
-        }
-//        db.update(
-//                tableName,
-//                values,
-//                "date=$date AND startTime=$startTime",
-//                null)
+        LogUtil.e(queryUpdate)
         db.close()
     }
 
@@ -122,7 +106,7 @@ class DBHelper(mContext: Context) : SQLiteOpenHelper(mContext, "smombie", null, 
         val db = writableDatabase
         val queryDelete = "delete from $tableName where startTime=\'$startTime\'"
         db.execSQL(queryDelete)
-        LogUtil.d(queryDelete)
+        LogUtil.e(queryDelete)
 
         db.close()
     }
@@ -139,7 +123,7 @@ class DBHelper(mContext: Context) : SQLiteOpenHelper(mContext, "smombie", null, 
             var queryDelete = "delete from $tableName where $index=$idx"
 //            }
             db.execSQL(queryDelete)
-            LogUtil.d(queryDelete)
+            LogUtil.e(queryDelete)
         }
         db.close()
     }
@@ -147,53 +131,11 @@ class DBHelper(mContext: Context) : SQLiteOpenHelper(mContext, "smombie", null, 
     /**
      * tb_smombie 데이터 검색
      */
-    fun select(date: Int): Cursor {
-        val db = writableDatabase
-        val querySelect = "select * from $tableName where date=\'$date\'"
-        db.rawQuery(querySelect, null)
-        LogUtil.d(querySelect)
-        return db.rawQuery(querySelect, null)
-    }
-
-    fun select(first: Int, last: Int): Cursor {
-        val db = writableDatabase
-        val querySelect = "select * from $tableName where date>=\'$first\' and date<=\'$last\' order by date asc"
-        db.rawQuery(querySelect, null)
-        LogUtil.d(querySelect)
-        return db.rawQuery(querySelect, null)
-    }
-
-    fun select(first: Int, last: Int, str: String): Cursor {
-        val db = writableDatabase
-        val querySelect = "select * from $tableName where date>=\'$first\' and date<=\'$last\' and title like \'%$str%\' order by date asc "
-        db.rawQuery(querySelect, null)
-        LogUtil.d(querySelect)
-        return db.rawQuery(querySelect, null)
-    }
-
-    fun select(str: String): Cursor {
-        val db = writableDatabase
-        val querySelect = "select * from $tableName where title like \'%$str%\' order by date desc"
-        db.rawQuery(querySelect, null)
-        LogUtil.d(querySelect)
-        return db.rawQuery(querySelect, null)
-    }
-
     fun selectAll(): Cursor {
         val db = writableDatabase
         val querySelect = "select * from $tableName"
         db.rawQuery(querySelect, null)
-        LogUtil.d(querySelect)
+        LogUtil.e(querySelect)
         return db.rawQuery(querySelect, null)
     }
-
-    fun selectResent(): Cursor {
-        val db = writableDatabase
-        val querySelect = "select * from $tableName order by date desc limit 10"
-        db.rawQuery(querySelect, null)
-        LogUtil.d(querySelect)
-        return db.rawQuery(querySelect, null)
-    }
-
-
 }

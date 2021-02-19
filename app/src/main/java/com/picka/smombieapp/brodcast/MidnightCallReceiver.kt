@@ -26,6 +26,7 @@ class MidnightCallReceiver : BroadcastReceiver() {
     private var alarmMgr: AlarmManager? = null
     override fun onReceive(context: Context, intent: Intent) {
         LogUtil.e("midnightCallReceive")
+        Thread.setDefaultUncaughtExceptionHandler(UncaughtException())
         alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         midnightUnregisterAlarmManager(context)
         StepService.endServiceTime = BaseApplication().getDateTime()
@@ -45,6 +46,7 @@ class MidnightCallReceiver : BroadcastReceiver() {
                 .setSmallIcon(R.drawable.logo)
                 .setContentText(context.getString(R.string.notification_body2))
                 .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
 
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -153,5 +155,11 @@ class MidnightCallReceiver : BroadcastReceiver() {
             resetCal.timeInMillis,
             pendingIntent
         )
+    }
+
+    inner class UncaughtException : Thread.UncaughtExceptionHandler {
+        override fun uncaughtException(t: Thread, e: Throwable) {
+            LogUtil.e(t, e)
+        }
     }
 }
