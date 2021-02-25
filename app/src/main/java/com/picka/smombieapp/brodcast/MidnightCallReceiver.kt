@@ -8,6 +8,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import androidx.core.app.NotificationCompat
 import androidx.core.database.getStringOrNull
 import com.picka.smombieapp.R
@@ -32,7 +34,12 @@ class MidnightCallReceiver : BroadcastReceiver() {
         StepService.endServiceTime = BaseApplication().getDateTime()
         endUpdate(context)
         showNotification(context)
-        midnightRegisterAlarmManager(context)
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            midnightRegisterAlarmManager(context)
+        },1000)
+
+
     }
 
     /** 알림창 */
@@ -146,13 +153,13 @@ class MidnightCallReceiver : BroadcastReceiver() {
 
         val resetCal = Calendar.getInstance().apply {
             timeInMillis = System.currentTimeMillis()
-            add(Calendar.HOUR_OF_DAY, 24)
+            set(Calendar.HOUR_OF_DAY, 0)
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
         }
         alarmMgr?.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
-            resetCal.timeInMillis,
+            resetCal.timeInMillis + AlarmManager.INTERVAL_DAY,
             pendingIntent
         )
     }
