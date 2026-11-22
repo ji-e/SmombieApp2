@@ -47,7 +47,7 @@ class MidnightCallReceiver : BroadcastReceiver() {
         val intent = Intent(context, MainActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         }
-        val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+        val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
         val notificationBuilder =
             NotificationCompat.Builder(context, Constants.CHANNEL_ID)
                 .setSmallIcon(R.drawable.logo)
@@ -141,7 +141,7 @@ class MidnightCallReceiver : BroadcastReceiver() {
     /** 자정 알람매니저 해제 */
     private fun midnightUnregisterAlarmManager(context: Context) {
         val alarmBroadcastReceiverIntent = Intent(context, MidnightCallReceiver::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(context, 0, alarmBroadcastReceiverIntent, 0)
+        val pendingIntent = PendingIntent.getBroadcast(context, 0, alarmBroadcastReceiverIntent, PendingIntent.FLAG_IMMUTABLE)
         alarmMgr?.cancel(pendingIntent)
     }
 
@@ -149,7 +149,7 @@ class MidnightCallReceiver : BroadcastReceiver() {
     private fun midnightRegisterAlarmManager(context: Context) {
         LogUtil.e("midnightCallRegistedAdd")
         val alarmBroadcastReceiverIntent = Intent(context, MidnightCallReceiver::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(context, 0, alarmBroadcastReceiverIntent, 0)
+        val pendingIntent = PendingIntent.getBroadcast(context, 0, alarmBroadcastReceiverIntent, PendingIntent.FLAG_IMMUTABLE)
 
         val resetCal = Calendar.getInstance().apply {
             timeInMillis = System.currentTimeMillis()
@@ -157,7 +157,7 @@ class MidnightCallReceiver : BroadcastReceiver() {
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
         }
-        alarmMgr?.setExactAndAllowWhileIdle(
+        alarmMgr?.setAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
             resetCal.timeInMillis + AlarmManager.INTERVAL_DAY,
             pendingIntent

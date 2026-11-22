@@ -3,6 +3,7 @@ package com.picka.smombieapp.brodcast
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import androidx.core.content.ContextCompat
 import com.picka.smombieapp.base.BaseApplication
 import com.picka.smombieapp.service.StepService
 import com.picka.smombieapp.utils.Constants
@@ -42,7 +43,12 @@ class SmombieReceiver : BroadcastReceiver() {
     private fun smombieServiceStart(mContext: Context) {
         if (BaseApplication.useSharedPreference.getPreferencesData(Constants.IS_STEP_SERVICE) == "Y") {
             val i = Intent(mContext, StepService::class.java)
-            mContext.startService(i)
+            try {
+                ContextCompat.startForegroundService(mContext, i)
+            } catch (e: Exception) {
+                // Android 12+는 백그라운드에서 포그라운드 서비스 시작을 막는다
+                LogUtil.e(e)
+            }
         }
     }
 

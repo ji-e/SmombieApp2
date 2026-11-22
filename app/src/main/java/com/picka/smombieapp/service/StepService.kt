@@ -18,6 +18,9 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
 import androidx.core.app.NotificationCompat
+import androidx.core.app.ServiceCompat
+import androidx.core.content.ContextCompat
+import android.content.pm.ServiceInfo
 import androidx.core.database.getStringOrNull
 import com.picka.smombieapp.R
 import com.picka.smombieapp.base.BaseApplication
@@ -210,8 +213,8 @@ class StepService : Service(), SensorEventListener {
             addAction(Intent.ACTION_SCREEN_OFF)
             addDataScheme("smombie")
         }
-        registerReceiver(smombieReceiver, smombieIntentFilter)
-        registerReceiver(screenReceiver, screenIntentFilter)
+        ContextCompat.registerReceiver(this, smombieReceiver, smombieIntentFilter, ContextCompat.RECEIVER_NOT_EXPORTED)
+        ContextCompat.registerReceiver(this, screenReceiver, screenIntentFilter, ContextCompat.RECEIVER_NOT_EXPORTED)
         screenReceiver.setCallback(screenCallback)
         isReceiver = true
     }
@@ -235,7 +238,7 @@ class StepService : Service(), SensorEventListener {
     private fun midnightRegisterAlarmManager() {
         LogUtil.e("midnightCallRegisted")
         val alarmBroadcastReceiverIntent = Intent(this, MidnightCallReceiver::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(this, 0, alarmBroadcastReceiverIntent, 0)
+        val pendingIntent = PendingIntent.getBroadcast(this, 0, alarmBroadcastReceiverIntent, PendingIntent.FLAG_IMMUTABLE)
         alarmMgr = getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         val resetCal = Calendar.getInstance().apply {
@@ -245,7 +248,7 @@ class StepService : Service(), SensorEventListener {
             set(Calendar.SECOND, 0)
         }
 
-        alarmMgr?.setExactAndAllowWhileIdle(
+        alarmMgr?.setAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
             resetCal.timeInMillis + AlarmManager.INTERVAL_DAY,
             pendingIntent
@@ -255,7 +258,7 @@ class StepService : Service(), SensorEventListener {
     /** 자정 알람매니저 해제 */
     private fun midnightUnregisterAlarmManager(){
         val alarmBroadcastReceiverIntent = Intent(this, MidnightCallReceiver::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(this, 0, alarmBroadcastReceiverIntent, 0)
+        val pendingIntent = PendingIntent.getBroadcast(this, 0, alarmBroadcastReceiverIntent, PendingIntent.FLAG_IMMUTABLE)
         alarmMgr?.cancel(pendingIntent)
     }
 
@@ -264,7 +267,7 @@ class StepService : Service(), SensorEventListener {
         val intent = Intent(this, MainActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         }
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
+        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
         val notificationBuilder =
             NotificationCompat.Builder(applicationContext, Constants.CHANNEL_ID)
                 .setSmallIcon(R.drawable.logo)
@@ -286,7 +289,19 @@ class StepService : Service(), SensorEventListener {
             notificationManager.createNotificationChannel(channel)
         }
 
-        startForeground(Constants.NOTIFICATION_ID, notificationBuilder.build())
+        try {
+            ServiceCompat.startForeground(
+                this,
+                Constants.NOTIFICATION_ID,
+                notificationBuilder.build(),
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) ServiceInfo.FOREGROUND_SERVICE_TYPE_HEALTH else 0
+            )
+        } catch (e: Exception) {
+            // 신체 활동 권한이 없으면 health 타입 포그라운드 서비스를 띄울 수 없다
+            LogUtil.e(e)
+            stopSelf()
+            return
+        }
         dataResetCheck()
 //        startInsert()
     }

@@ -2,7 +2,10 @@ package com.picka.smombieapp.base
 
 import android.database.Cursor
 import android.os.*
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.picka.smombieapp.utils.DBHelper
 import com.picka.smombieapp.utils.LogUtil
 
@@ -12,6 +15,16 @@ open class BaseActivity : AppCompatActivity() {
         Thread.setDefaultUncaughtExceptionHandler(UncaughtException())
 
         overridePendingTransition(0, 0)
+    }
+
+    /** Android 15+ 전체화면(edge-to-edge) 강제: 상태바·내비게이션바만큼 안쪽으로 */
+    override fun setContentView(view: View) {
+        super.setContentView(view)
+        ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
+            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(bars.left, bars.top, bars.right, bars.bottom)
+            insets
+        }
     }
 
     override fun onPause() {

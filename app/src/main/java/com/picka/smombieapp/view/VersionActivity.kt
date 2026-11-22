@@ -33,8 +33,8 @@ class VersionActivity : BaseActivity() {
     private fun getVersion() {
         val thisVer = (BuildConfig.VERSION_NAME).replace(".", "")
         var marketVer = "0"
-        try {
-            Thread {
+        Thread {
+            try {
                 val doc = Jsoup.connect("https://play.google.com/store/apps/details?id=" + "com.picka.smombieapp").get()
                 val ver = doc.select(".htlgb").eq(6)
                 for (mElement in ver) {
@@ -49,10 +49,11 @@ class VersionActivity : BaseActivity() {
                         binding.versionTvMsg.text = strVer
                     }
                 }
-            }.start()
-        } catch (e: IOException) {
-            LogUtil.e(e)
-        }
+            } catch (e: Exception) {
+                // 플레이스토어 페이지 구조가 바뀌면 버전 비교만 건너뛴다
+                LogUtil.e(e)
+            }
+        }.start()
 
     }
 }

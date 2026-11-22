@@ -40,7 +40,7 @@ open class BaseBottomDialog : BottomSheetDialog {
 
         setOnShowListener { dialog ->
             val bottomSheetDialog = dialog as BottomSheetDialog
-            val bottomSheet = bottomSheetDialog.findViewById<FrameLayout>(R.id.design_bottom_sheet)
+            val bottomSheet = bottomSheetDialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
 
             bottomSheet?.background =
                     if (mResId == -1) ContextCompat.getDrawable(mContext, R.drawable.rectangle_r4_ffffff)

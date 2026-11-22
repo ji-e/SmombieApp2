@@ -1,5 +1,6 @@
 package com.picka.smombieapp.view
 
+import androidx.activity.OnBackPressedCallback
 import android.Manifest
 import android.content.ComponentName
 import android.content.Context
@@ -82,6 +83,10 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Android 16+는 뒤로 제스처에 onBackPressed를 부르지 않는다
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() = backPressCloseHandler.onBackPressed()
+        })
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         Thread.setDefaultUncaughtExceptionHandler(UncaughtException())
@@ -107,10 +112,6 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                 showCircle("END")
             }
         }
-    }
-
-    override fun onBackPressed() {
-        backPressCloseHandler.onBackPressed()
     }
 
     override fun onClick(v: View?) {
@@ -227,9 +228,10 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 
     /** Smombie 서비스 상태 설정 */
     private fun setServiceState(isState: String) {
+        val stepServiceIntent = stepServiceIntent ?: return
         try {
             if (isState == "START") {
-                startService(stepServiceIntent)
+                ContextCompat.startForegroundService(this, stepServiceIntent)
                 bindService(stepServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
             } else {
                 stopService(stepServiceIntent)

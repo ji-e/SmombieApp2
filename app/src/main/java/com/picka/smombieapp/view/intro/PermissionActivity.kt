@@ -65,6 +65,8 @@ class PermissionActivity : BaseActivity(), View.OnClickListener {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == Constants.CHECK_PERMISSION) {
             for (i in grantResults.indices) {
+                // 알림 권한은 거절해도 잠금은 동작한다
+                if (permissions[i] == Manifest.permission.POST_NOTIFICATIONS) continue
                 if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
                     permissionOnFail()
                     return
@@ -110,19 +112,19 @@ class PermissionActivity : BaseActivity(), View.OnClickListener {
 
     /** 권한체크 */
     private fun permissionCheck() {
+        // 기록 파일은 앱 전용 폴더에 쓰므로 Android 10+는 저장소 권한이 필요 없다 (13+는 요청해도 거절된다)
         val permission: Array<String> =
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                 arrayOf(
                     Manifest.permission.READ_EXTERNAL_STORAGE,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE
-//                            Manifest.permission.READ_PHONE_STATE
                 )
+            } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                arrayOf(Manifest.permission.ACTIVITY_RECOGNITION)
             } else {
                 arrayOf(
                     Manifest.permission.ACTIVITY_RECOGNITION,
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-//                            Manifest.permission.READ_PHONE_STATE
+                    Manifest.permission.POST_NOTIFICATIONS
                 )
             }
 
