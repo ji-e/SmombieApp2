@@ -44,6 +44,9 @@ class PermissionActivity : BaseActivity(), View.OnClickListener {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             binding.msg4.visibility = View.GONE
             binding.msg41.visibility = View.GONE
+        } else {
+            binding.msg3.visibility = View.GONE
+            binding.msg31.visibility = View.GONE
         }
 
     }
@@ -112,21 +115,9 @@ class PermissionActivity : BaseActivity(), View.OnClickListener {
 
     /** 권한체크 */
     private fun permissionCheck() {
-        // 기록 파일은 앱 전용 폴더에 쓰므로 Android 10+는 저장소 권한이 필요 없다 (13+는 요청해도 거절된다)
         val permission: Array<String> =
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                arrayOf(
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                )
-            } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                arrayOf(Manifest.permission.ACTIVITY_RECOGNITION)
-            } else {
-                arrayOf(
-                    Manifest.permission.ACTIVITY_RECOGNITION,
-                    Manifest.permission.POST_NOTIFICATIONS
-                )
-            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) requiredPermissions() + Manifest.permission.POST_NOTIFICATIONS
+            else requiredPermissions()
 
         for (i in permission.indices) {
             val permissionCheck = ContextCompat.checkSelfPermission(this, permission[i])

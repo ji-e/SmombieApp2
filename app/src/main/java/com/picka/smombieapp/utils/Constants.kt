@@ -18,7 +18,8 @@ object Constants {
     const val EXCEL_FILE_NAME = "smombieApp_log"
 
     const val BUG_EMAIL="picka.hr@gmail.com"
-    const val PRIVACY_URL = "http://smombie.pickstudio.io/privacy"
+    // 예전 주소(smombie.pickstudio.io)가 닫혀서 앱 안에 넣은 문서를 띄운다
+    const val PRIVACY_URL = "file:///android_asset/privacy.html"
 
     const val IS_PRIVACY = "IS_PRIVACY"
     const val EXCEL_EMAIL = "EXCEL_EMAIL"

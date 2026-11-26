@@ -158,19 +158,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     /** 권한체크 */
     private fun permissionCheck() {
         val permissionList = ArrayList<String>()
-        val permission: Array<String> =
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                arrayOf(
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                )
-            } else {
-                arrayOf(
-                    Manifest.permission.ACTIVITY_RECOGNITION,
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                )
-            }
+        val permission = requiredPermissions()
 
         for (i in permission.indices) {
             val permissionCheck = ContextCompat.checkSelfPermission(this, permission[i])

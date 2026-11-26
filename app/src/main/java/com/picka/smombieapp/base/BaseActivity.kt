@@ -1,5 +1,6 @@
 package com.picka.smombieapp.base
 
+import android.Manifest
 import android.database.Cursor
 import android.os.*
 import android.view.View
@@ -40,6 +41,14 @@ open class BaseActivity : AppCompatActivity() {
             android.os.Process.killProcess(android.os.Process.myPid())
         }, 200)
     }
+
+    /** 앱이 돌아가는 데 꼭 필요한 런타임 권한. 기록 파일은 앱 전용 폴더에 쓰므로 Android 10+는 저장소 권한이 필요 없다 */
+    fun requiredPermissions(): Array<String> =
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        } else {
+            arrayOf(Manifest.permission.ACTIVITY_RECOGNITION)
+        }
 
     fun getLogCursor(): Cursor {
         return DBHelper(this).selectAll()
